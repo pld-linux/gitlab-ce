@@ -1,0 +1,24 @@
+#####################################################
+#
+# GitLab version    : 5.x - 6.x
+# Contributors      : davispuh, mtorromeo, axilleas, boeserwolf91
+# Downloaded from   : https://github.com/gitlabhq/gitlab-recipes/tree/master/init/systemd
+#
+####################################################
+
+[Unit]
+Description=GitLab Unicorn Server
+
+[Service]
+User=gitlab
+WorkingDirectory=/var/lib/gitlab
+Environment=RAILS_ENV=production
+SyslogIdentifier=gitlab-unicorn
+PIDFile=/var/lib/gitlab/pids/unicorn.pid
+
+ExecStart=/var/lib/gitlab/bin/bundle exec "unicorn_rails -c /var/lib/gitlab/config/unicorn.rb -E production"
+ExecStop=kill -QUIT $MAINPID
+ExecReload=kill -USR2 $MAINPID
+
+[Install]
+WantedBy=gitlab.target

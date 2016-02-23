@@ -1,0 +1,21 @@
+/var/lib/gitlab/log/application.log
+/var/lib/gitlab/log/development.log
+/var/lib/gitlab/log/githost.log
+/var/lib/gitlab/log/production.log
+/var/lib/gitlab/log/sidekiq.log
+/var/lib/gitlab/log/unicorn.stderr.log
+/var/lib/gitlab/log/unicorn.stdout.log
+{
+    rotate 7
+    daily
+    maxsize 10M
+    minsize 1M
+    missingok
+    notifempty
+    compress
+    delaycompress
+    sharedscripts
+    postrotate
+        invoke-rc.d gitlab restart > /dev/null
+    endscript
+}
