@@ -55,9 +55,10 @@ sed -e "s|username: git|username: gitlab|" \
 %build
 # Note: SSL error temporary fixed with 'sudo gem update --system' which updates
 # /usr/bin/gem
-#:<< _EOF
 bundle install %{_smp_mflags} \
-   --no-cache --no-prune --deployment --without development test aws
+	--verbose \
+	%{?debug:--no-cache --no-prune} \
+	 --deployment --without development test aws
 
 %install
 rm -rf $RPM_BUILD_ROOT
