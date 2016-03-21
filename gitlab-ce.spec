@@ -63,6 +63,10 @@ sed -e "s|/home/git/gitlab/tmp/.*/|/run/gitlab/|g" \
 	config/unicorn.rb.example > config/unicorn.rb
 sed -e "s|username: git|username: gitlab|" \
 	config/database.yml.mysql > config/database.yml
+
+rm .flayignore
+rm .gitignore
+find -name .gitkeep | xargs rm
 		
 %build
 bundle install %{_smp_mflags} \
@@ -79,7 +83,13 @@ install -d \
     $RPM_BUILD_ROOT%{_docdir}/gitlab \
     $RPM_BUILD_ROOT%{homedir}/satellites
 
-cp -a . $RPM_BUILD_ROOT%{homedir}
+# test if we can hardlink -- %{_builddir} and $RPM_BUILD_ROOT on same partition
+if cp -al VERSION $RPM_BUILD_ROOT/VERSION 2>/dev/null; then
+	l=l
+	rm -f $RPM_BUILD_ROOT/VERSION
+fi
+
+cp -a$l . $RPM_BUILD_ROOT%{homedir}
 
 # Creating links
 ln -fs /run/gitlab $RPM_BUILD_ROOT%{homedir}/pids
@@ -160,7 +170,6 @@ fi
 %dir %attr(755,gitlab,gitlab) %{homedir}/bin
 %attr(-,gitlab,gitlab) %{homedir}/bin/*
 %dir %attr(755,gitlab,gitlab) %{homedir}/builds
-%attr(-,gitlab,gitlab) %{homedir}/builds/.gitkeep
 %dir %attr(755,gitlab,gitlab) %{homedir}/config
 %attr(-,gitlab,gitlab) %{homedir}/config/*
 %dir %attr(755,gitlab,gitlab) %{homedir}/db
@@ -175,7 +184,6 @@ fi
 %attr(-,gitlab,gitlab) %{homedir}/lib/*
 %dir %attr(755,gitlab,gitlab) %{homedir}/log
 %attr(-,gitlab,gitlab) %{homedir}/log/*
-%attr(-,gitlab,gitlab) %{homedir}/log/.gitkeep
 %dir %attr(755,gitlab,gitlab) %{homedir}/pids
 %dir %attr(755,gitlab,gitlab) %{homedir}/public
 %attr(-,gitlab,gitlab) %{homedir}/public/*
@@ -210,3 +218,4 @@ fi
 %attr(-,gitlab,gitlab) %{homedir}/Rakefile
 %attr(-,gitlab,gitlab) %{homedir}/VERSION
 %attr(-,gitlab,gitlab) %{homedir}/config.ru
+%attr(-,gitlab,gitlab) %{homedir}/fixtures
