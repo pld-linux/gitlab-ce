@@ -1,11 +1,23 @@
+# NOTE:
+#  This package uses Bundler to download and install all gems in deployment
+#  mode (i.e. into isolated directory inside application). That's not PLD Linux
+#  way how it should be done, but GitLab has too many dependencies that it will
+#  be too difficult to maintain them via distro packages.
+# TODO
+# - [timfel-krb5-auth] doesn't build with heimdal (https://github.com/timfel/krb5-auth/issues/8)
+#
+#
+# Conditional build:
+%bcond_with	krb5		# build with kerberos support
+
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
-Version:	8.1.4
+Version:	8.5.8
 Release:	0.1
 License:	MIT
 Group:		Applications/WWW
-Source0:	https://gitlab.com/gitlab-org/gitlab-ce.git/v%{version}/%{name}-%{version}.tar.bz2
-# Source0-md5:	742f0752299c6b7aefe332bc61658426
+Source0:	https://github.com/gitlabhq/gitlabhq/archive/v%{version}/%{name}-%{version}.tar.gz
+# Source0-md5:	d8514dee6e06eb222da814873b567e5e
 URL:		https://www.gitlab.com/gitlab-ce/
 Source1:	gitlab.target
 Source2:	gitlab-sidekiq.service
@@ -18,9 +30,9 @@ Obsoletes:	gitlab <= 8.1.4
 Requires(pre):	gitlab-shell
 Requires:	apache-base
 Requires:	git-core
-Requires:	mysql
-Requires:	redis-server
 Requires:	ruby-bundler
+Suggests:	mysql
+Suggests:	redis-server
 BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -36,7 +48,7 @@ reviews. GitLab CE is on-premises software that you can install and
 use on your server(s).
 
 %prep
-%setup -q
+%setup -qn gitlabhq-%{version}
 
 # Patching config files:
 sed -e "s|# user: git|user: gitlab|" \
@@ -53,12 +65,10 @@ sed -e "s|username: git|username: gitlab|" \
 	config/database.yml.mysql > config/database.yml
 		
 %build
-# Note: SSL error temporary fixed with 'sudo gem update --system' which updates
-# /usr/bin/gem
 bundle install %{_smp_mflags} \
 	--verbose \
 	%{?debug:--no-cache --no-prune} \
-	 --deployment --without development test aws
+	 --deployment --without development test aws %{!?with_krb5:kerberos}
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -75,12 +85,12 @@ cp -a . $RPM_BUILD_ROOT%{homedir}
 ln -fs /run/gitlab $RPM_BUILD_ROOT%{homedir}/pids
 ln -fs /run/gitlab $RPM_BUILD_ROOT%{homedir}/sockets
 ln -fs %{_localstatedir}/log/gitlab $RPM_BUILD_ROOT%{homedir}/log
-install -d %{_localstatedir}/log/gitlab
+install -d $RPM_BUILD_ROOT%{_localstatedir}/log/gitlab
 
 # Install config files
 for f in gitlab.yml unicorn.rb database.yml; do
 	install -m0644 config/$f $RPM_BUILD_ROOT%{_sysconfdir}/gitlab/$f
-	[[ -f "$RPM_BUILD_ROOT%{homedir}/config/$f" ]] && rm $RPM_BUILD_ROOT%{homedir}/config/$f
+	[ -f "$RPM_BUILD_ROOT%{homedir}/config/$f" ] && rm $RPM_BUILD_ROOT%{homedir}/config/$f
 	ln -fs %{_sysconfdir}/gitlab/$f $RPM_BUILD_ROOT%{homedir}/config/
 done
 
@@ -191,7 +201,7 @@ fi
 %attr(-,gitlab,gitlab) %{homedir}/.ruby-version
 %attr(-,gitlab,gitlab) %{homedir}/.simplecov
 %attr(-,gitlab,gitlab) %{homedir}/CHANGELOG
-%attr(-,gitlab,gitlab) %{homedir}/GITLAB_GIT_HTTP_SERVER_VERSION
+%attr(-,gitlab,gitlab) %{homedir}/GITLAB_WORKHORSE_VERSION
 %attr(-,gitlab,gitlab) %{homedir}/GITLAB_SHELL_VERSION
 %attr(-,gitlab,gitlab) %{homedir}/Gemfile*
 %attr(-,gitlab,gitlab) %{homedir}/LICENSE
