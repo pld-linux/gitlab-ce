@@ -12,12 +12,11 @@
 
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
-Version:	8.5.8
+Version:	8.6.3
 Release:	0.1
 License:	MIT
 Group:		Applications/WWW
 Source0:	https://github.com/gitlabhq/gitlabhq/archive/v%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	d8514dee6e06eb222da814873b567e5e
 URL:		https://www.gitlab.com/gitlab-ce/
 Source1:	gitlab.target
 Source2:	gitlab-sidekiq.service
@@ -29,11 +28,10 @@ BuildRequires:	ruby-bundler
 Obsoletes:	gitlab <= 8.1.4
 Requires(pre):	gitlab-shell
 Requires:	apache-base
-Requires:	git-core
+Requires:	git-core >= 2.7.4
 Requires:	ruby-bundler
 Suggests:	mysql
 Suggests:	redis-server
-BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define gitlab_uid 65434
@@ -66,6 +64,7 @@ sed -e "s|username: git|username: gitlab|" \
 
 rm .flayignore
 rm .gitignore
+rm .csscomb.json
 find -name .gitkeep | xargs rm
 		
 %build
