@@ -3,6 +3,9 @@
 #  mode (i.e. into isolated directory inside application). That's not PLD Linux
 #  way how it should be done, but GitLab has too many dependencies that it will
 #  be too difficult to maintain them via distro packages.
+#
+# install notes: https://gitlab.com/gitlab-org/gitlab-ce/blob/v8.6.3/doc/install/installation.md
+#
 # TODO
 # - [timfel-krb5-auth] doesn't build with heimdal (https://github.com/timfel/krb5-auth/issues/8)
 #
