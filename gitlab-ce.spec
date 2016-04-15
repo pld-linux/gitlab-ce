@@ -12,7 +12,7 @@
 #
 # Conditional build:
 %bcond_with	krb5		# build with kerberos support
-%bcond_with	gem_cache	# build from local gem cache only (avoids network)
+%bcond_without	gem_cache	# use local to speedup gem installation
 
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
@@ -85,14 +85,24 @@ rm .csscomb.json
 find -name .gitkeep | xargs rm
 
 %build
+%if %{with gem_cache}
+cachedir="%{_specdir}/cache/%{version}.%{_arch}"
+install -d vendor/bundle
+test -d "$cachedir" && cp -aul "$cachedir"/* vendor/bundle
+%endif
+
 bundle install %{_smp_mflags} \
 	--verbose \
-	%{?with_gem_cache:--local} \
-	%{?debug:--no-cache --no-prune} \
-	 --deployment --without development test aws %{!?with_krb5:kerberos}
+	--deployment \
+	--without development test aws %{!?with_krb5:kerberos}
 
 # avoid bogus ruby dep
 chmod a-x vendor/bundle/ruby/gems/unicorn-*/bin/unicorn*
+
+%if %{with gem_cache}
+install -d "$cachedir"
+cp -aul vendor/bundle/* "$cachedir"
+%endif
 
 %install
 rm -rf $RPM_BUILD_ROOT
