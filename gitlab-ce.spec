@@ -12,6 +12,7 @@
 #
 # Conditional build:
 %bcond_with	krb5		# build with kerberos support
+%bcond_with	gem_cache	# build from local gem cache only (avoids network)
 
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
@@ -74,6 +75,7 @@ find -name .gitkeep | xargs rm
 %build
 bundle install %{_smp_mflags} \
 	--verbose \
+	%{?with_gem_cache:--local} \
 	%{?debug:--no-cache --no-prune} \
 	 --deployment --without development test aws %{!?with_krb5:kerberos}
 
