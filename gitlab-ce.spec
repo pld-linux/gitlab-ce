@@ -29,9 +29,17 @@ Source3:	gitlab-unicorn.service
 Source4:	gitlab.logrotate
 Source5:	gitlab.tmpfiles.d
 Source6:	gitlab-apache-conf
+BuildRequires:	cmake
 BuildRequires:	gmp-devel
+BuildRequires:	libicu-devel
+BuildRequires:	libstdc++-devel
+BuildRequires:	libxml2-devel
+BuildRequires:	libxslt-devel
+BuildRequires:	mysql-devel
+BuildRequires:	postgresql-devel
 BuildRequires:	ruby-bundler
 BuildRequires:	ruby-devel >= 1:2.1.0
+BuildRequires:	zlib-devel
 Obsoletes:	gitlab <= 8.1.4
 Requires(pre):	gitlab-shell
 Requires:	apache-base
@@ -75,7 +83,7 @@ rm .flayignore
 rm .gitignore
 rm .csscomb.json
 find -name .gitkeep | xargs rm
-		
+
 %build
 bundle install %{_smp_mflags} \
 	--verbose \
