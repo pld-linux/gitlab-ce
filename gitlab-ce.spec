@@ -4,7 +4,7 @@
 #  way how it should be done, but GitLab has too many dependencies that it will
 #  be too difficult to maintain them via distro packages.
 #
-# install notes: https://gitlab.com/gitlab-org/gitlab-ce/blob/v8.6.3/doc/install/installation.md
+# install notes: https://gitlab.com/gitlab-org/gitlab-ce/blob/v8.6.6/doc/install/installation.md
 #
 # TODO
 # - [timfel-krb5-auth] doesn't build with heimdal (https://github.com/timfel/krb5-auth/issues/8)
@@ -17,7 +17,7 @@
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
 Version:	8.6.6
-Release:	0.1
+Release:	0.2
 License:	MIT
 Group:		Applications/WWW
 # md5 deliberately omitted until this package is useful
@@ -40,6 +40,8 @@ Requires:	ruby-bundler
 Suggests:	mysql
 Suggests:	redis-server
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+
+%define	_noautoreqfiles redcloth_scan.jar primitives.jar
 
 %define gitlab_uid 65434
 %define gitlab_gid 65434
@@ -80,6 +82,9 @@ bundle install %{_smp_mflags} \
 	%{?with_gem_cache:--local} \
 	%{?debug:--no-cache --no-prune} \
 	 --deployment --without development test aws %{!?with_krb5:kerberos}
+
+# avoid bogus ruby dep
+chmod a-x vendor/bundle/ruby/gems/unicorn-*/bin/unicorn*
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -165,6 +170,8 @@ fi
 %config(noreplace) %{_sysconfdir}/gitlab/database.yml
 %config(noreplace) %{_sysconfdir}/gitlab/gitlab.yml
 %config(noreplace) %{_sysconfdir}/gitlab/unicorn.rb
+%dir /etc/httpd
+%dir /etc/httpd/httpd.d
 %config(noreplace) %{_sysconfdir}/httpd/httpd.d/gitlab.conf
 /etc/logrotate.d/gitlab.logrotate
 %{systemdunitdir}/gitlab-sidekiq.service
