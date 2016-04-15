@@ -29,7 +29,9 @@ Source3:	gitlab-unicorn.service
 Source4:	gitlab.logrotate
 Source5:	gitlab.tmpfiles.d
 Source6:	gitlab-apache-conf
+BuildRequires:	gmp-devel
 BuildRequires:	ruby-bundler
+BuildRequires:	ruby-devel >= 1:2.1.0
 Obsoletes:	gitlab <= 8.1.4
 Requires(pre):	gitlab-shell
 Requires:	apache-base
