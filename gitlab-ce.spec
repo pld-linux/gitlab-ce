@@ -15,10 +15,11 @@
 
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
-Version:	8.6.3
+Version:	8.6.6
 Release:	0.1
 License:	MIT
 Group:		Applications/WWW
+# md5 deliberately omitted until this package is useful
 Source0:	https://github.com/gitlabhq/gitlabhq/archive/v%{version}/%{name}-%{version}.tar.gz
 URL:		https://www.gitlab.com/gitlab-ce/
 Source1:	gitlab.target
