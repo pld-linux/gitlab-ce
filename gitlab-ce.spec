@@ -31,12 +31,13 @@ Source5:	gitlab.tmpfiles.d
 Source6:	gitlab-apache-conf
 BuildRequires:	cmake
 BuildRequires:	gmp-devel
+BuildRequires:	libgit2-devel
 BuildRequires:	libicu-devel
 BuildRequires:	libstdc++-devel
 BuildRequires:	libxml2-devel
-BuildRequires:	libxslt-devel
 BuildRequires:	mysql-devel
 BuildRequires:	postgresql-devel
+BuildRequires:	rpm-rubyprov
 BuildRequires:	ruby-bundler
 BuildRequires:	ruby-devel >= 1:2.1.0
 BuildRequires:	zlib-devel
