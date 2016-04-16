@@ -45,6 +45,7 @@ Obsoletes:	gitlab <= 8.1.4
 Requires(pre):	gitlab-shell
 Requires:	apache-base
 Requires:	git-core >= 2.7.4
+Requires:	nodejs
 Requires:	ruby-bundler
 Suggests:	mysql
 Suggests:	redis-server
