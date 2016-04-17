@@ -17,7 +17,7 @@
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
 Version:	8.6.6
-Release:	0.2
+Release:	0.3
 License:	MIT
 Group:		Applications/WWW
 # md5 deliberately omitted until this package is useful
@@ -230,8 +230,6 @@ fi
 %attr(-,gitlab,gitlab) %{homedir}/spec/*
 %dir %attr(755,gitlab,gitlab) %{homedir}/tmp
 %attr(-,gitlab,gitlab) %{homedir}/tmp/*
-%dir %{homedir}/vendor
-%{homedir}/vendor/*
 %dir %attr(755,gitlab,gitlab) %{homedir}/www
 
 %dir %attr(755,gitlab,gitlab) %{homedir}/.bundle
@@ -254,3 +252,7 @@ fi
 %attr(-,gitlab,gitlab) %{homedir}/VERSION
 %attr(-,gitlab,gitlab) %{homedir}/config.ru
 %attr(-,gitlab,gitlab) %{homedir}/fixtures
+
+%defattr(-,root,root,-)
+%dir %{homedir}/vendor
+%{homedir}/vendor/*
