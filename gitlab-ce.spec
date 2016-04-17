@@ -136,13 +136,16 @@ for f in gitlab.yml unicorn.rb database.yml; do
 	ln -fs %{_sysconfdir}/gitlab/$f $RPM_BUILD_ROOT%{homedir}/config/
 done
 
+install -d $RPM_BUILD_ROOT{%{systemdunitdir},%{systemdtmpfilesdir}} \
+	$RPM_BUILD_ROOT/etc/{logrotate.d,httpd/webapps.d}
+
 # Install systemd service files
-install -D %{S:1} $RPM_BUILD_ROOT%{systemdunitdir}/gitlab.target
-install -D %{S:2} $RPM_BUILD_ROOT%{systemdunitdir}/gitlab-sidekiq.service
-install -D %{S:3} $RPM_BUILD_ROOT%{systemdunitdir}/gitlab-unicorn.service
-install -D %{S:4} $RPM_BUILD_ROOT%{_sysconfdir}/logrotate.d/gitlab.logrotate
-install -D %{S:5} $RPM_BUILD_ROOT%{systemdtmpfilesdir}/gitlab.conf
-install -D %{S:6} $RPM_BUILD_ROOT%{_sysconfdir}/httpd/httpd.d/gitlab.conf
+cp -p %{SOURCE1} $RPM_BUILD_ROOT%{systemdunitdir}/gitlab.target
+cp -p %{SOURCE2} $RPM_BUILD_ROOT%{systemdunitdir}/gitlab-sidekiq.service
+cp -p %{SOURCE3} $RPM_BUILD_ROOT%{systemdunitdir}/gitlab-unicorn.service
+cp -p %{SOURCE5} $RPM_BUILD_ROOT%{systemdtmpfilesdir}/gitlab.conf
+cp -p %{SOURCE4} $RPM_BUILD_ROOT/etc/logrotate.d/gitlab.logrotate
+cp -p %{SOURCE6} $RPM_BUILD_ROOT/etc/httpd/webapps.d/gitlab.conf
 
 %clean
 rm -rf "$RPM_BUILD_ROOT"
@@ -190,9 +193,7 @@ fi
 %config(noreplace) %{_sysconfdir}/gitlab/database.yml
 %config(noreplace) %{_sysconfdir}/gitlab/gitlab.yml
 %config(noreplace) %{_sysconfdir}/gitlab/unicorn.rb
-%dir /etc/httpd
-%dir /etc/httpd/httpd.d
-%config(noreplace) %{_sysconfdir}/httpd/httpd.d/gitlab.conf
+%config(noreplace) %{_sysconfdir}/httpd/webapps.d/gitlab.conf
 /etc/logrotate.d/gitlab.logrotate
 %{systemdunitdir}/gitlab-sidekiq.service
 %{systemdunitdir}/gitlab-unicorn.service
