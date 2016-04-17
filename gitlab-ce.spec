@@ -17,7 +17,7 @@
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
 Version:	8.6.6
-Release:	0.3
+Release:	0.5
 License:	MIT
 Group:		Applications/WWW
 # md5 deliberately omitted until this package is useful
@@ -126,12 +126,13 @@ cp -a$l . $RPM_BUILD_ROOT%{homedir}
 # Creating links
 ln -fs /run/gitlab $RPM_BUILD_ROOT%{homedir}/pids
 ln -fs /run/gitlab $RPM_BUILD_ROOT%{homedir}/sockets
+rmdir $RPM_BUILD_ROOT%{homedir}/log
 ln -fs %{_localstatedir}/log/gitlab $RPM_BUILD_ROOT%{homedir}/log
 install -d $RPM_BUILD_ROOT%{_localstatedir}/log/gitlab
 
 # Install config files
 for f in gitlab.yml unicorn.rb database.yml; do
-	install -m0644 config/$f $RPM_BUILD_ROOT%{_sysconfdir}/gitlab/$f
+	cp -p config/$f $RPM_BUILD_ROOT%{_sysconfdir}/gitlab/$f
 	[ -f "$RPM_BUILD_ROOT%{homedir}/config/$f" ] && rm $RPM_BUILD_ROOT%{homedir}/config/$f
 	ln -fs %{_sysconfdir}/gitlab/$f $RPM_BUILD_ROOT%{homedir}/config/
 done
@@ -217,8 +218,6 @@ fi
 %attr(-,gitlab,gitlab) %{homedir}/features/*
 %dir %attr(755,gitlab,gitlab) %{homedir}/lib
 %attr(-,gitlab,gitlab) %{homedir}/lib/*
-%dir %attr(755,gitlab,gitlab) %{homedir}/log
-%attr(-,gitlab,gitlab) %{homedir}/log/*
 %dir %attr(755,gitlab,gitlab) %{homedir}/pids
 %dir %attr(755,gitlab,gitlab) %{homedir}/public
 %attr(-,gitlab,gitlab) %{homedir}/public/*
@@ -252,6 +251,9 @@ fi
 %attr(-,gitlab,gitlab) %{homedir}/VERSION
 %attr(-,gitlab,gitlab) %{homedir}/config.ru
 %attr(-,gitlab,gitlab) %{homedir}/fixtures
+
+%{homedir}/log
+%dir %attr(771,root,gitlab) /var/log/gitlab
 
 %defattr(-,root,root,-)
 %dir %{homedir}/vendor
