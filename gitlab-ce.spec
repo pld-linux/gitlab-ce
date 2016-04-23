@@ -17,7 +17,7 @@
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
 Version:	8.6.7
-Release:	0.8
+Release:	0.9
 License:	MIT
 Group:		Applications/WWW
 # md5 deliberately omitted until this package is useful
@@ -190,8 +190,8 @@ if [ $1 -eq 1 ]; then
 	echo "Then run 'sudo -u gitlab bundle exec rake gitlab:setup RAILS_ENV=production'"
 	echo
 else
-	systemctl -q try-restart gitlab-unicorn
-	systemctl -q try-start gitlab-sidekiq
+	systemctl -q try-restart gitlab-unicorn || :
+	systemctl -q try-start gitlab-sidekiq || :
 fi
 
 %postun
