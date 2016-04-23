@@ -16,7 +16,7 @@
 
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
-Version:	8.6.6
+Version:	8.6.7
 Release:	0.6
 License:	MIT
 Group:		Applications/WWW
@@ -124,6 +124,10 @@ if cp -al VERSION $RPM_BUILD_ROOT/VERSION 2>/dev/null; then
 fi
 
 cp -a$l . $RPM_BUILD_ROOT%{homedir}
+
+# nuke tests
+chmod -R u+w $RPM_BUILD_ROOT%{homedir}/vendor/bundle/ruby/gems/*/test
+rm -r $RPM_BUILD_ROOT%{homedir}/vendor/bundle/ruby/gems/*/test
 
 # Creating links
 ln -fs /run/gitlab $RPM_BUILD_ROOT%{homedir}/pids
