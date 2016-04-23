@@ -1,0 +1,27 @@
+https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/3774
+
+From e5d9d3657d67e49c518bf414c47f335c080cd20d Mon Sep 17 00:00:00 2001
+From: Elan Ruusamäe <glen@delfi.ee>
+Date: Sun, 17 Apr 2016 18:11:28 +0000
+Subject: [PATCH] update gitlab shell secret file also when it is empty
+
+---
+ config/initializers/gitlab_shell_secret_token.rb | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/config/initializers/gitlab_shell_secret_token.rb b/config/initializers/gitlab_shell_secret_token.rb
+index 751fcce..f086b2a 100644
+--- a/config/initializers/gitlab_shell_secret_token.rb
++++ b/config/initializers/gitlab_shell_secret_token.rb
+@@ -7,7 +7,7 @@ require 'securerandom'
+ 
+ secret_file = Gitlab.config.gitlab_shell.secret_file
+ 
+-unless File.exist? secret_file
++unless File.size? secret_file
+   # Generate a new token of 16 random hexadecimal characters and store it in secret_file.
+   token = SecureRandom.hex(16)
+   File.write(secret_file, token)
+--
+libgit2 0.24.0
+

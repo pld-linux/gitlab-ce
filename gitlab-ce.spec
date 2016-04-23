@@ -17,11 +17,12 @@
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
 Version:	8.6.6
-Release:	0.5
+Release:	0.6
 License:	MIT
 Group:		Applications/WWW
 # md5 deliberately omitted until this package is useful
 Source0:	https://github.com/gitlabhq/gitlabhq/archive/v%{version}/%{name}-%{version}.tar.gz
+Patch0:		https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/3774.patch
 URL:		https://www.gitlab.com/gitlab-ce/
 Source1:	gitlab.target
 Source2:	gitlab-sidekiq.service
@@ -66,6 +67,7 @@ use on your server(s).
 
 %prep
 %setup -qn gitlabhq-%{version}
+%patch0 -p1
 
 # Patching config files:
 sed -e "s|# user: git|user: gitlab|" \
