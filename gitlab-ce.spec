@@ -17,7 +17,7 @@
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
 Version:	8.6.7
-Release:	0.6
+Release:	0.8
 License:	MIT
 Group:		Applications/WWW
 # md5 deliberately omitted until this package is useful
@@ -125,6 +125,9 @@ fi
 
 cp -a$l . $RPM_BUILD_ROOT%{homedir}
 
+# rpm cruft from repackaging
+rm -f $RPM_BUILD_ROOT%{homedir}/debug*.list
+
 # nuke tests
 chmod -R u+w $RPM_BUILD_ROOT%{homedir}/vendor/bundle/ruby/gems/*/test
 rm -r $RPM_BUILD_ROOT%{homedir}/vendor/bundle/ruby/gems/*/test
@@ -136,11 +139,15 @@ rmdir $RPM_BUILD_ROOT%{homedir}/log
 ln -fs %{_localstatedir}/log/gitlab $RPM_BUILD_ROOT%{homedir}/log
 install -d $RPM_BUILD_ROOT%{_localstatedir}/log/gitlab
 
+move_config() {
+	local source=$1 target=$2
+	mv $RPM_BUILD_ROOT$source $RPM_BUILD_ROOT$target
+	ln -s $target $RPM_BUILD_ROOT$source
+}
+
 # Install config files
 for f in gitlab.yml unicorn.rb database.yml; do
-	cp -p config/$f $RPM_BUILD_ROOT%{_sysconfdir}/gitlab/$f
-	[ -f "$RPM_BUILD_ROOT%{homedir}/config/$f" ] && rm $RPM_BUILD_ROOT%{homedir}/config/$f
-	ln -fs %{_sysconfdir}/gitlab/$f $RPM_BUILD_ROOT%{homedir}/config/
+	move_config %{homedir}/config/$f %{_sysconfdir}/gitlab/$f
 done
 
 install -d $RPM_BUILD_ROOT{%{systemdunitdir},%{systemdtmpfilesdir}} \
