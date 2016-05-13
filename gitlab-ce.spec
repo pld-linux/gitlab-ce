@@ -17,7 +17,7 @@
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
 Version:	8.7.5
-Release:	0.9
+Release:	0.10
 License:	MIT
 Group:		Applications/WWW
 # md5 deliberately omitted until this package is useful
@@ -54,10 +54,9 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define	_noautoreqfiles redcloth_scan.jar primitives.jar
 
-%define gitlab_uid 65434
-%define gitlab_gid 65434
-
-%define     homedir       %{_localstatedir}/lib/gitlab
+%define	uname git
+%define gname git
+%define homedir %{_localstatedir}/lib/gitlab
 
 %description
 GitLab Community Edition (CE) is open source software to collaborate
@@ -164,12 +163,6 @@ cp -p %{SOURCE6} $RPM_BUILD_ROOT/etc/httpd/webapps.d/gitlab.conf
 %clean
 rm -rf "$RPM_BUILD_ROOT"
 
-%pre
-if [ $1 -ge 1 ]; then
-	%groupadd gitlab -g %{gitlab_gid}
-	%useradd -u %{gitlab_uid} -c 'Gitlab user' -d %{homedir} -g gitlab -s /bin/bash gitlab
-fi
-
 %post
 if [ $1 -ge 1 ]; then
 	systemctl -q daemon-reload
@@ -213,60 +206,60 @@ fi
 %{systemdunitdir}/gitlab-unicorn.service
 %{systemdunitdir}/gitlab.target
 %{systemdtmpfilesdir}/gitlab.conf
-%dir %attr(755,gitlab,gitlab) %{homedir}
-%dir %attr(755,gitlab,gitlab) %{homedir}/app
-%attr(-,gitlab,gitlab) %{homedir}/app/*
-%dir %attr(755,gitlab,gitlab) %{homedir}/bin
-%attr(-,gitlab,gitlab) %{homedir}/bin/*
-%dir %attr(755,gitlab,gitlab) %{homedir}/builds
-%dir %attr(755,gitlab,gitlab) %{homedir}/config
-%attr(-,gitlab,gitlab) %{homedir}/config/*
-%dir %attr(755,gitlab,gitlab) %{homedir}/db
-%attr(-,gitlab,gitlab) %{homedir}/db/*
-%dir %attr(755,gitlab,gitlab) %{homedir}/doc
-%attr(-,gitlab,gitlab) %{homedir}/doc/*
-%dir %attr(755,gitlab,gitlab) %{homedir}/docker
-%attr(-,gitlab,gitlab) %{homedir}/docker/*
-%dir %attr(755,gitlab,gitlab) %{homedir}/features
-%attr(-,gitlab,gitlab) %{homedir}/features/*
-%dir %attr(755,gitlab,gitlab) %{homedir}/lib
-%attr(-,gitlab,gitlab) %{homedir}/lib/*
-%dir %attr(755,gitlab,gitlab) %{homedir}/pids
-%dir %attr(755,gitlab,gitlab) %{homedir}/public
-%attr(-,gitlab,gitlab) %{homedir}/public/*
-%dir %attr(755,gitlab,gitlab) %{homedir}/satellites
-%dir %attr(755,gitlab,gitlab) %{homedir}/scripts
-%attr(-,gitlab,gitlab) %{homedir}/scripts/*
-%dir %attr(755,gitlab,gitlab) %{homedir}/sockets
-%dir %attr(755,gitlab,gitlab) %{homedir}/spec
-%attr(-,gitlab,gitlab) %{homedir}/spec/*
-%dir %attr(755,gitlab,gitlab) %{homedir}/tmp
-%attr(-,gitlab,gitlab) %{homedir}/tmp/*
-%dir %attr(755,gitlab,gitlab) %{homedir}/www
+%dir %attr(755,%{uname},%{gname}) %{homedir}
+%dir %attr(755,%{uname},%{gname}) %{homedir}/app
+%attr(-,%{uname},%{gname}) %{homedir}/app/*
+%dir %attr(755,%{uname},%{gname}) %{homedir}/bin
+%attr(-,%{uname},%{gname}) %{homedir}/bin/*
+%dir %attr(755,%{uname},%{gname}) %{homedir}/builds
+%dir %attr(755,%{uname},%{gname}) %{homedir}/config
+%attr(-,%{uname},%{gname}) %{homedir}/config/*
+%dir %attr(755,%{uname},%{gname}) %{homedir}/db
+%attr(-,%{uname},%{gname}) %{homedir}/db/*
+%dir %attr(755,%{uname},%{gname}) %{homedir}/doc
+%attr(-,%{uname},%{gname}) %{homedir}/doc/*
+%dir %attr(755,%{uname},%{gname}) %{homedir}/docker
+%attr(-,%{uname},%{gname}) %{homedir}/docker/*
+%dir %attr(755,%{uname},%{gname}) %{homedir}/features
+%attr(-,%{uname},%{gname}) %{homedir}/features/*
+%dir %attr(755,%{uname},%{gname}) %{homedir}/lib
+%attr(-,%{uname},%{gname}) %{homedir}/lib/*
+%dir %attr(755,%{uname},%{gname}) %{homedir}/pids
+%dir %attr(755,%{uname},%{gname}) %{homedir}/public
+%attr(-,%{uname},%{gname}) %{homedir}/public/*
+%dir %attr(755,%{uname},%{gname}) %{homedir}/satellites
+%dir %attr(755,%{uname},%{gname}) %{homedir}/scripts
+%attr(-,%{uname},%{gname}) %{homedir}/scripts/*
+%dir %attr(755,%{uname},%{gname}) %{homedir}/sockets
+%dir %attr(755,%{uname},%{gname}) %{homedir}/spec
+%attr(-,%{uname},%{gname}) %{homedir}/spec/*
+%dir %attr(755,%{uname},%{gname}) %{homedir}/tmp
+%attr(-,%{uname},%{gname}) %{homedir}/tmp/*
+%dir %attr(755,%{uname},%{gname}) %{homedir}/www
 
-%dir %attr(755,gitlab,gitlab) %{homedir}/.bundle
-%attr(-,gitlab,gitlab) %{homedir}/.bundle/config
-%attr(-,gitlab,gitlab) %{homedir}/.foreman
-%attr(-,gitlab,gitlab) %{homedir}/docker-compose.yml
-%attr(-,gitlab,gitlab) %{homedir}/.gitattributes
-%attr(-,gitlab,gitlab) %{homedir}/.*.yml
-%attr(-,gitlab,gitlab) %{homedir}/.rspec
-%attr(-,gitlab,gitlab) %{homedir}/.ruby-version
-%attr(-,gitlab,gitlab) %{homedir}/.simplecov
-%attr(-,gitlab,gitlab) %{homedir}/CHANGELOG
-%attr(-,gitlab,gitlab) %{homedir}/GITLAB_WORKHORSE_VERSION
-%attr(-,gitlab,gitlab) %{homedir}/GITLAB_SHELL_VERSION
-%attr(-,gitlab,gitlab) %{homedir}/Gemfile*
-%attr(-,gitlab,gitlab) %{homedir}/LICENSE
-%attr(-,gitlab,gitlab) %{homedir}/*.md
-%attr(-,gitlab,gitlab) %{homedir}/Procfile
-%attr(-,gitlab,gitlab) %{homedir}/Rakefile
-%attr(-,gitlab,gitlab) %{homedir}/VERSION
-%attr(-,gitlab,gitlab) %{homedir}/config.ru
-%attr(-,gitlab,gitlab) %{homedir}/fixtures
+%dir %attr(755,%{uname},%{gname}) %{homedir}/.bundle
+%attr(-,%{uname},%{gname}) %{homedir}/.bundle/config
+%attr(-,%{uname},%{gname}) %{homedir}/.foreman
+%attr(-,%{uname},%{gname}) %{homedir}/docker-compose.yml
+%attr(-,%{uname},%{gname}) %{homedir}/.gitattributes
+%attr(-,%{uname},%{gname}) %{homedir}/.*.yml
+%attr(-,%{uname},%{gname}) %{homedir}/.rspec
+%attr(-,%{uname},%{gname}) %{homedir}/.ruby-version
+%attr(-,%{uname},%{gname}) %{homedir}/.simplecov
+%attr(-,%{uname},%{gname}) %{homedir}/CHANGELOG
+%attr(-,%{uname},%{gname}) %{homedir}/GITLAB_WORKHORSE_VERSION
+%attr(-,%{uname},%{gname}) %{homedir}/GITLAB_SHELL_VERSION
+%attr(-,%{uname},%{gname}) %{homedir}/Gemfile*
+%attr(-,%{uname},%{gname}) %{homedir}/LICENSE
+%attr(-,%{uname},%{gname}) %{homedir}/*.md
+%attr(-,%{uname},%{gname}) %{homedir}/Procfile
+%attr(-,%{uname},%{gname}) %{homedir}/Rakefile
+%attr(-,%{uname},%{gname}) %{homedir}/VERSION
+%attr(-,%{uname},%{gname}) %{homedir}/config.ru
+%attr(-,%{uname},%{gname}) %{homedir}/fixtures
 
 %{homedir}/log
-%dir %attr(771,root,gitlab) /var/log/gitlab
+%dir %attr(771,root,%{gname}) /var/log/gitlab
 
 %defattr(-,root,root,-)
 %dir %{homedir}/vendor
