@@ -17,7 +17,7 @@
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
 Version:	8.7.5
-Release:	0.12
+Release:	0.13
 License:	MIT
 Group:		Applications/WWW
 # md5 deliberately omitted until this package is useful
@@ -26,10 +26,12 @@ Patch0:		https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/3774.patch
 URL:		https://www.gitlab.com/gitlab-ce/
 Source1:	gitlab.target
 Source2:	gitlab-sidekiq.service
-Source3:	gitlab-unicorn.service
-Source4:	gitlab.logrotate
-Source5:	gitlab.tmpfiles.d
-Source6:	gitlab-apache-conf
+Source3:	gitlab-sidekiq.init
+Source4:	gitlab-unicorn.service
+Source5:	gitlab-unicorn.init
+Source6:	gitlab.logrotate
+Source7:	gitlab.tmpfiles.d
+Source8:	gitlab-apache-conf
 BuildRequires:	cmake
 BuildRequires:	gmp-devel
 BuildRequires:	libgit2-devel
@@ -150,15 +152,17 @@ for f in gitlab.yml unicorn.rb database.yml; do
 done
 
 install -d $RPM_BUILD_ROOT{%{systemdunitdir},%{systemdtmpfilesdir}} \
-	$RPM_BUILD_ROOT/etc/{logrotate.d,httpd/webapps.d}
+	$RPM_BUILD_ROOT/etc/{logrotate.d,rc.d/init.d,httpd/webapps.d}
 
-# Install systemd service files
-cp -p %{SOURCE1} $RPM_BUILD_ROOT%{systemdunitdir}/gitlab.target
 cp -p %{SOURCE2} $RPM_BUILD_ROOT%{systemdunitdir}/gitlab-sidekiq.service
-cp -p %{SOURCE3} $RPM_BUILD_ROOT%{systemdunitdir}/gitlab-unicorn.service
-cp -p %{SOURCE5} $RPM_BUILD_ROOT%{systemdtmpfilesdir}/gitlab.conf
-cp -p %{SOURCE4} $RPM_BUILD_ROOT/etc/logrotate.d/gitlab.logrotate
-cp -p %{SOURCE6} $RPM_BUILD_ROOT/etc/httpd/webapps.d/gitlab.conf
+install -p %{SOURCE3} $RPM_BUILD_ROOT/etc/rc.d/init.d/gitlab-sidekiq
+cp -p %{SOURCE4} $RPM_BUILD_ROOT%{systemdunitdir}/gitlab-unicorn.service
+install -p %{SOURCE5} $RPM_BUILD_ROOT/etc/rc.d/init.d/gitlab-unicorn
+
+cp -p %{SOURCE1} $RPM_BUILD_ROOT%{systemdunitdir}/gitlab.target
+cp -p %{SOURCE7} $RPM_BUILD_ROOT%{systemdtmpfilesdir}/gitlab.conf
+cp -p %{SOURCE6} $RPM_BUILD_ROOT/etc/logrotate.d/gitlab.logrotate
+cp -p %{SOURCE8} $RPM_BUILD_ROOT/etc/httpd/webapps.d/gitlab.conf
 
 %clean
 rm -rf "$RPM_BUILD_ROOT"
@@ -202,6 +206,8 @@ fi
 %config(noreplace) %{_sysconfdir}/gitlab/unicorn.rb
 %config(noreplace) %{_sysconfdir}/httpd/webapps.d/gitlab.conf
 /etc/logrotate.d/gitlab.logrotate
+%attr(754,root,root) /etc/rc.d/init.d/gitlab-sidekiq
+%attr(754,root,root) /etc/rc.d/init.d/gitlab-unicorn
 %{systemdunitdir}/gitlab-sidekiq.service
 %{systemdunitdir}/gitlab-unicorn.service
 %{systemdunitdir}/gitlab.target

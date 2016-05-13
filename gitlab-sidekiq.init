@@ -1,0 +1,122 @@
+#!/bin/sh
+#
+# gitlab-sidekiq GitLab Sidekiq Worker
+#
+# chkconfig:	345 82 18
+# description: Runs GitLab Sidekiq Worker
+# processname: sidekiq
+
+# Related (kudos @4sak3n0ne):
+# https://github.com/gitlabhq/gitlabhq/issues/1049#issuecomment-8386882
+# https://gist.github.com/3062860
+
+# Source function library
+. /etc/rc.d/init.d/functions
+
+# Get network config
+. /etc/sysconfig/network
+
+# Check that networking is up.
+if is_yes "${NETWORKING}"; then
+	if [ ! -f /var/lock/subsys/network -a "$1" != stop -a "$1" != status ]; then
+		msg_network_down "GitLab Sidekiq"
+		exit 1
+	fi
+else
+	exit 0
+fi
+
+### Environment variables
+RAILS_ENV="production"
+
+# The username and path to the gitlab source
+USER=git
+APP_PATH=/var/lib/gitlab
+
+# The PID and LOCK files used by unicorn and sidekiq
+pidfile=$APP_PATH/tmp/pids/sidekiq.pid
+lockfile=/var/lock/subsys/gitlab-sidekiq
+
+# Get service config - may override defaults
+[ -f /etc/sysconfig/gitlab-sidekiq ] && . /etc/sysconfig/gitlab-sidekiq
+
+start() {
+	# Check if the service is already running?
+	if [ -f $lockfile ]; then
+		msg_already_running "GitLab Sidekiq"
+		return
+	fi
+
+	msg_starting "GitLab Sidekiq"
+	daemon --pidfile $pidfile --user $USER --chdir "$APP_PATH" \
+		bundle exec \
+		"sidekiq -q post_receive,mailer,system_hook,project_web_hook,gitlab_shell,common,default -e $RAILS_ENV -P pids/sidekiq.pid -d -L log/sidekiq.log >> log/sidekiq.log 2>&1"
+	RETVAL=$?
+	[ $RETVAL -eq 0 ] && touch $lockfile
+}
+
+stop() {
+	if [ ! -f $lockfile ]; then
+		msg_not_running "GitLab Sidekiq"
+		return
+	fi
+
+	# Stop daemons.
+	msg_stopping "GitLab Sidekiq"
+	killproc --pidfile $pidfile sidekiq
+	rm -f $lockfile
+}
+
+reload() {
+	if [ ! -f $lockfile ]; then
+		msg_not_running "GitLab Sidekiq"
+		RETVAL=7
+		return
+	fi
+
+	msg_reloading "GitLab Sidekiq"
+	killproc <procname> -HUP
+	killproc --pidfile $pidfile <procname> -HUP
+	RETVAL=$?
+}
+
+condrestart() {
+	if [ ! -f $lockfile ]; then
+		msg_not_running "GitLab Sidekiq"
+		RETVAL=$1
+		return
+	fi
+
+	stop
+	start
+}
+
+RETVAL=0
+# See how we were called.
+case "$1" in
+  start)
+	start
+	;;
+  stop)
+	stop
+	;;
+  restart)
+	stop
+	start
+	;;
+  try-restart)
+	condrestart 0
+	;;
+  force-reload)
+	condrestart 7
+	;;
+  status)
+	status --pidfile $pidfile gitlab-sidekiq
+	RETVAL=$?
+	;;
+  *)
+	msg_usage "$0 {start|stop|restart|try-restart|force-reload|status}"
+	exit 3
+esac
+
+exit $RETVAL
