@@ -17,7 +17,7 @@
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
 Version:	8.7.5
-Release:	0.10
+Release:	0.12
 License:	MIT
 Group:		Applications/WWW
 # md5 deliberately omitted until this package is useful
@@ -111,7 +111,7 @@ cp -aul vendor/bundle/* "$cachedir"
 rm -rf $RPM_BUILD_ROOT
 install -d \
     $RPM_BUILD_ROOT%{homedir}/www \
-    $RPM_BUILD_ROOT%{homedir}/public/uploads \
+    $RPM_BUILD_ROOT%{homedir}/public/{assets,uploads} \
 	$RPM_BUILD_ROOT%{_sysconfdir}/gitlab \
     $RPM_BUILD_ROOT%{_docdir}/gitlab \
     $RPM_BUILD_ROOT%{homedir}/satellites
@@ -225,8 +225,11 @@ fi
 %dir %attr(755,%{uname},%{gname}) %{homedir}/lib
 %attr(-,%{uname},%{gname}) %{homedir}/lib/*
 %dir %attr(755,%{uname},%{gname}) %{homedir}/pids
-%dir %attr(755,%{uname},%{gname}) %{homedir}/public
-%attr(-,%{uname},%{gname}) %{homedir}/public/*
+%dir %{homedir}/public
+%dir %{homedir}/public/ci
+%{homedir}/public/*.*
+%attr(-,%{uname},%{gname}) %{homedir}/public/uploads
+%attr(-,%{uname},%{gname}) %{homedir}/public/assets
 %dir %attr(755,%{uname},%{gname}) %{homedir}/satellites
 %dir %attr(755,%{uname},%{gname}) %{homedir}/scripts
 %attr(-,%{uname},%{gname}) %{homedir}/scripts/*
