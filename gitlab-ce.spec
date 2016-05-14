@@ -226,7 +226,7 @@ fi
 %attr(-,%{uname},%{gname}) %{homedir}/lib/*
 %dir %attr(755,%{uname},%{gname}) %{homedir}/pids
 %dir %{homedir}/public
-%dir %{homedir}/public/ci
+%{homedir}/public/ci
 %{homedir}/public/*.*
 %attr(-,%{uname},%{gname}) %{homedir}/public/uploads
 %attr(-,%{uname},%{gname}) %{homedir}/public/assets
