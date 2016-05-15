@@ -13,4 +13,4 @@ do
 done
 
 cd /var/lib/gitlab
-exec sudo -u gitlab bundle exec rake RAILS_ENV=production "$@"
+exec sudo -u git bundle exec rake RAILS_ENV=production "$@"
