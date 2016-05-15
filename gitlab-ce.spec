@@ -207,7 +207,6 @@ fi
 %files
 %defattr(644,root,root,755)
 %doc LICENSE
-%dir %{_sysconfdir}/gitlab
 %config(noreplace) %{_sysconfdir}/gitlab/database.yml
 %config(noreplace) %{_sysconfdir}/gitlab/gitlab.yml
 %config(noreplace) %{_sysconfdir}/gitlab/unicorn.rb
