@@ -34,7 +34,7 @@ USER=git
 APP_PATH=/var/lib/gitlab
 
 # The PID and LOCK files used by unicorn and sidekiq
-pidfile=$APP_PATH/tmp/pids/unicorn.pid
+pidfile=$APP_PATH/pids/unicorn.pid
 lockfile=/var/lock/subsys/gitlab-unicorn
 
 # Get service config - may override defaults
@@ -64,19 +64,6 @@ stop() {
 	msg_stopping "GitLab Unicorn"
 	killproc --pidfile $pidfile unicorn
 	rm -f $lockfile
-}
-
-reload() {
-	if [ ! -f $lockfile ]; then
-		msg_not_running "GitLab Unicorn"
-		RETVAL=7
-		return
-	fi
-
-	msg_reloading "GitLab Unicorn"
-	killproc <procname> -HUP
-	killproc --pidfile $pidfile <procname> -HUP
-	RETVAL=$?
 }
 
 condrestart() {
@@ -110,7 +97,7 @@ case "$1" in
 	condrestart 7
 	;;
   status)
-	status --pidfile $pidfile unicorn
+	status --pidfile $pidfile unicorn_rails
 	RETVAL=$?
 	;;
   *)
