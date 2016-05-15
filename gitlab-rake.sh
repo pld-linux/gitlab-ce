@@ -1,4 +1,8 @@
 #!/bin/sh
+# Frontend to Gitlab Rake tasks
+#
+# http://docs.gitlab.com/ce/raketasks/
+#
 set -e
 
 # Unset ENV variables that might interfere with
