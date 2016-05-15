@@ -1,0 +1,69 @@
+--- gitlabhq-8.7.5/config/gitlab.yml	2016-05-12 17:35:19.000000000 +0300
++++ gitlabhq-8.7.5.paths/config/gitlab.yml	2016-05-15 21:30:47.260578333 +0300
+@@ -56,7 +56,7 @@
+       #- 2001:0db8::/32
+ 
+     # Uncomment and customize if you can't use the default user to run GitLab (default: 'git')
+-    # user: git
++    user: git
+ 
+     ## Date & Time settings
+     # Uncomment and customize if you want to change the default time zone of GitLab application.
+@@ -412,7 +412,7 @@
+   # least. This setting is fed to 'rm -rf' in
+   # db/migrate/20151023144219_remove_satellites.rb
+   satellites:
+-    path: /home/git/gitlab-satellites/
++    path: /var/lib/gitlab/satellites/
+ 
+   ## Backup settings
+   backup:
+@@ -437,11 +437,11 @@
+ 
+   ## GitLab Shell settings
+   gitlab_shell:
+-    path: /home/git/gitlab-shell/
++    path: /usr/share/gitlab-shell/
+ 
+     # REPOS_PATH MUST NOT BE A SYMLINK!!!
+-    repos_path: /home/git/repositories/
+-    hooks_path: /home/git/gitlab-shell/hooks/
++    repos_path: /var/lib/gitlab/repositories/
++    hooks_path: /usr/share/gitlab-shell/hooks/
+ 
+     # File that contains the secret key for verifying access for gitlab-shell.
+     # Default is '.gitlab_shell_secret' relative to Rails.root (i.e. root of the GitLab app).
+--- gitlabhq-8.7.5/config/unicorn.rb	2016-05-12 17:35:19.000000000 +0300
++++ gitlabhq-8.7.5.paths/config/unicorn.rb	2016-05-15 21:30:47.263911838 +0300
+@@ -33,12 +33,12 @@
+ 
+ # Help ensure your application will always spawn in the symlinked
+ # "current" directory that Capistrano sets up.
+-working_directory "/home/git/gitlab" # available in 0.94.0+
++working_directory "/var/lib/gitlab" # available in 0.94.0+
+ 
+ # Listen on both a Unix domain socket and a TCP port.
+ # If you are load-balancing multiple Unicorn masters, lower the backlog
+ # setting to e.g. 64 for faster failover.
+-listen "/home/git/gitlab/tmp/sockets/gitlab.socket", :backlog => 1024
++listen "/run/gitlab/gitlab.socket", :backlog => 1024
+ listen "127.0.0.1:8080", :tcp_nopush => true
+ 
+ # nuke workers after 30 seconds instead of 60 seconds (the default)
+@@ -59,13 +59,13 @@
+ timeout 60
+ 
+ # feel free to point this anywhere accessible on the filesystem
+-pid "/home/git/gitlab/tmp/pids/unicorn.pid"
++pid "/run/gitlab/unicorn.pid"
+ 
+ # By default, the Unicorn logger will write to stderr.
+ # Additionally, some applications/frameworks log to stderr or stdout,
+ # so prevent them from going to /dev/null when daemonized here:
+-stderr_path "/home/git/gitlab/log/unicorn.stderr.log"
+-stdout_path "/home/git/gitlab/log/unicorn.stdout.log"
++stderr_path "/var/lib/gitlab/log/unicorn.stderr.log"
++stdout_path "/var/lib/gitlab/log/unicorn.stdout.log"
+ 
+ # combine Ruby 2.0.0dev or REE with "preload_app true" for memory savings
+ # http://rubyenterpriseedition.com/faq.html#adapt_apps_for_cow

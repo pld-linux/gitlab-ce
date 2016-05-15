@@ -17,13 +17,13 @@
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
 Version:	8.7.5
-Release:	0.20
+Release:	0.21
 License:	MIT
 Group:		Applications/WWW
 # md5 deliberately omitted until this package is useful
 Source0:	https://github.com/gitlabhq/gitlabhq/archive/v%{version}/%{name}-%{version}.tar.gz
 Patch0:		https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/3774.patch
-URL:		https://www.gitlab.com/gitlab-ce/
+Patch1:		pld.patch
 Source1:	gitlab.target
 Source2:	gitlab-sidekiq.service
 Source3:	gitlab-sidekiq.init
@@ -34,6 +34,7 @@ Source7:	gitlab.tmpfiles.d
 Source8:	gitlab-apache-conf
 Source9:	gitlab-rake.sh
 Source10:	gitconfig
+URL:		https://www.gitlab.com/gitlab-ce/
 BuildRequires:	cmake
 BuildRequires:	gmp-devel
 BuildRequires:	libgit2-devel
@@ -70,21 +71,11 @@ use on your server(s).
 
 %prep
 %setup -qn gitlabhq-%{version}
+mv config/gitlab.yml.example config/gitlab.yml
+mv config/unicorn.rb.example config/unicorn.rb
+mv config/database.yml.mysql config/database.yml
 %patch0 -p1
-
-# Patching config files:
-sed -e "s|# user: git|user: gitlab|" \
-	-e "s|/home/git/repositories|%{homedir}/repositories|" \
-	-e "s|/home/git/gitlab-satellites|%{homedir}/satellites|" \
-	-e "s|/home/git/gitlab-shell|/usr/share/gitlab-shell|" \
-	config/gitlab.yml.example > config/gitlab.yml
-sed -e "s|/home/git/gitlab/tmp/.*/|/run/gitlab/|g" \
-	-e "s|/home/git/gitlab|%{homedir}|g" \
-	-e "s|/usr/share/gitlab/log|%{homedir}/log|g" \
-	-e "s|timeout 30|timeout 300|" \
-	config/unicorn.rb.example > config/unicorn.rb
-sed -e "s|username: git|username: gitlab|" \
-	config/database.yml.mysql > config/database.yml
+%patch1 -p1
 
 rm .flayignore
 rm .gitignore
