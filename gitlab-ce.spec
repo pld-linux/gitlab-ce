@@ -17,7 +17,7 @@
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
 Version:	8.7.5
-Release:	0.19.4
+Release:	0.20
 License:	MIT
 Group:		Applications/WWW
 # md5 deliberately omitted until this package is useful
@@ -89,6 +89,7 @@ sed -e "s|username: git|username: gitlab|" \
 rm .flayignore
 rm .gitignore
 rm .csscomb.json
+rm .gitattributes
 rm docker-compose.yml
 find -name .gitkeep | xargs rm
 rm -r lib/support/{deploy,init.d}
@@ -261,10 +262,16 @@ fi
 %attr(-,%{uname},%{gname}) %{homedir}/tmp/*
 %dir %attr(755,%{uname},%{gname}) %{homedir}/www
 
+%dir %attr(750,%{uname},%{gname}) %{homedir}/shared
+%dir %attr(750,%{uname},%{gname}) %{homedir}/shared/artifacts
+%dir %attr(750,%{uname},%{gname}) %{homedir}/shared/artifacts/tmp
+%dir %attr(750,%{uname},%{gname}) %{homedir}/shared/artifacts/tmp/cache
+%dir %attr(750,%{uname},%{gname}) %{homedir}/shared/artifacts/tmp/uploads
+%dir %attr(750,%{uname},%{gname}) %{homedir}/shared/lfs-objects
+
 %dir %attr(755,%{uname},%{gname}) %{homedir}/.bundle
 %attr(-,%{uname},%{gname}) %{homedir}/.bundle/config
 %attr(-,%{uname},%{gname}) %{homedir}/.foreman
-%attr(-,%{uname},%{gname}) %{homedir}/.gitattributes
 %attr(-,%{uname},%{gname}) %{homedir}/.*.yml
 %attr(-,%{uname},%{gname}) %{homedir}/.rspec
 %attr(-,%{uname},%{gname}) %{homedir}/.ruby-version
