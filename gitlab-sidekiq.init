@@ -49,8 +49,8 @@ start() {
 
 	msg_starting "GitLab Sidekiq"
 	daemon --pidfile $pidfile --user $USER --chdir "$APP_PATH" \
-		bundle exec \
-		"sidekiq -q post_receive,mailer,system_hook,project_web_hook,gitlab_shell,common,default -e $RAILS_ENV -P pids/sidekiq.pid -d -L log/sidekiq.log >> log/sidekiq.log 2>&1"
+		env RAILS_ENV=$RAILS_ENV \
+		bin/background_jobs start
 	RETVAL=$?
 	[ $RETVAL -eq 0 ] && touch $lockfile
 }
@@ -63,7 +63,10 @@ stop() {
 
 	# Stop daemons.
 	msg_stopping "GitLab Sidekiq"
-	killproc --pidfile $pidfile sidekiq
+	daemon --pidfile $pidfile --user $USER --chdir "$APP_PATH" \
+		env RAILS_ENV=$RAILS_ENV \
+		bin/background_jobs stop
+	RETVAL=$?
 	rm -f $lockfile
 }
 
