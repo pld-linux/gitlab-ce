@@ -112,11 +112,12 @@ cp -aul vendor/bundle/* "$cachedir"
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d \
-    $RPM_BUILD_ROOT%{homedir}/www \
-    $RPM_BUILD_ROOT%{homedir}/public/{assets,uploads} \
+	$RPM_BUILD_ROOT%{homedir}/www \
+	$RPM_BUILD_ROOT%{homedir}/public/{assets,uploads} \
+	$RPM_BUILD_ROOT%{homedir}/satellites \
+	$RPM_BUILD_ROOT%{homedir}/tmp/{cache/assets,sessions} \
 	$RPM_BUILD_ROOT%{_sysconfdir}/gitlab \
-    $RPM_BUILD_ROOT%{_docdir}/gitlab \
-    $RPM_BUILD_ROOT%{homedir}/satellites
+	$RPM_BUILD_ROOT%{_docdir}/gitlab \
 
 # test if we can hardlink -- %{_builddir} and $RPM_BUILD_ROOT on same partition
 if cp -al VERSION $RPM_BUILD_ROOT/VERSION 2>/dev/null; then
