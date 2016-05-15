@@ -17,7 +17,7 @@
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
 Version:	8.7.5
-Release:	0.19.2
+Release:	0.19.4
 License:	MIT
 Group:		Applications/WWW
 # md5 deliberately omitted until this package is useful
@@ -33,6 +33,7 @@ Source6:	gitlab.logrotate
 Source7:	gitlab.tmpfiles.d
 Source8:	gitlab-apache-conf
 Source9:	gitlab-rake.sh
+Source10:	gitconfig
 BuildRequires:	cmake
 BuildRequires:	gmp-devel
 BuildRequires:	libgit2-devel
@@ -176,6 +177,7 @@ cp -p %{SOURCE1} $RPM_BUILD_ROOT%{systemdunitdir}/gitlab.target
 cp -p %{SOURCE7} $RPM_BUILD_ROOT%{systemdtmpfilesdir}/gitlab.conf
 cp -p %{SOURCE6} $RPM_BUILD_ROOT/etc/logrotate.d/gitlab.logrotate
 cp -p %{SOURCE8} $RPM_BUILD_ROOT/etc/httpd/webapps.d/gitlab.conf
+cp -p %{SOURCE10} $RPM_BUILD_ROOT%{homedir}/.gitconfig
 install -p %{SOURCE9} $RPM_BUILD_ROOT%{_sbindir}/gitlab-rake
 
 %clean
@@ -194,9 +196,6 @@ if [ $1 -eq 1 ]; then
 	systemctl -q start gitlab-unicorn
 	systemctl -q start gitlab-sidekiq
 	systemctl -q start gitlab.target
-	sudo -u gitlab -H git config --global user.name "GitLab"
-	sudo -u gitlab -H git config --global user.email "gitlab@localhost"
-	sudo -u gitlab -H git config --global core.autocrlf input
 	echo "Create and configure database in /etc/gitlab/database.yml"
 	echo "Then run 'sudo -u gitlab bundle exec rake gitlab:setup RAILS_ENV=production'"
 	echo
@@ -228,6 +227,7 @@ fi
 %{systemdunitdir}/gitlab.target
 %{systemdtmpfilesdir}/gitlab.conf
 %dir %attr(755,%{uname},%{gname}) %{homedir}
+%dir %attr(640,%{uname},%{gname}) %{homedir}/.gitconfig
 %dir %attr(755,%{uname},%{gname}) %{homedir}/app
 %attr(-,%{uname},%{gname}) %{homedir}/app/*
 %dir %attr(755,%{uname},%{gname}) %{homedir}/bin
