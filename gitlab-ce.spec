@@ -17,7 +17,7 @@
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
 Version:	8.7.5
-Release:	0.15
+Release:	0.17
 License:	MIT
 Group:		Applications/WWW
 # md5 deliberately omitted until this package is useful
@@ -32,6 +32,7 @@ Source5:	gitlab-unicorn.init
 Source6:	gitlab.logrotate
 Source7:	gitlab.tmpfiles.d
 Source8:	gitlab-apache-conf
+Source9:	gitlab-rake.sh
 BuildRequires:	cmake
 BuildRequires:	gmp-devel
 BuildRequires:	libgit2-devel
@@ -161,7 +162,7 @@ for f in gitlab.yml unicorn.rb database.yml; do
 	move_config %{homedir}/config/$f %{_sysconfdir}/gitlab/$f
 done
 
-install -d $RPM_BUILD_ROOT{%{systemdunitdir},%{systemdtmpfilesdir}} \
+install -d $RPM_BUILD_ROOT{%{_sbindir},%{systemdunitdir},%{systemdtmpfilesdir}} \
 	$RPM_BUILD_ROOT/etc/{logrotate.d,rc.d/init.d,httpd/webapps.d}
 
 cp -p %{SOURCE2} $RPM_BUILD_ROOT%{systemdunitdir}/gitlab-sidekiq.service
@@ -173,6 +174,7 @@ cp -p %{SOURCE1} $RPM_BUILD_ROOT%{systemdunitdir}/gitlab.target
 cp -p %{SOURCE7} $RPM_BUILD_ROOT%{systemdtmpfilesdir}/gitlab.conf
 cp -p %{SOURCE6} $RPM_BUILD_ROOT/etc/logrotate.d/gitlab.logrotate
 cp -p %{SOURCE8} $RPM_BUILD_ROOT/etc/httpd/webapps.d/gitlab.conf
+install -p %{SOURCE9} $RPM_BUILD_ROOT%{_sbindir}/gitlab-rake
 
 %clean
 rm -rf "$RPM_BUILD_ROOT"
@@ -218,6 +220,7 @@ fi
 /etc/logrotate.d/gitlab.logrotate
 %attr(754,root,root) /etc/rc.d/init.d/gitlab-sidekiq
 %attr(754,root,root) /etc/rc.d/init.d/gitlab-unicorn
+%attr(755,root,root) %{_sbindir}/gitlab-rake
 %{systemdunitdir}/gitlab-sidekiq.service
 %{systemdunitdir}/gitlab-unicorn.service
 %{systemdunitdir}/gitlab.target
