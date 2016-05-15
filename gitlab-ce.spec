@@ -17,7 +17,7 @@
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
 Version:	8.7.5
-Release:	0.19.1
+Release:	0.19.2
 License:	MIT
 Group:		Applications/WWW
 # md5 deliberately omitted until this package is useful
@@ -88,7 +88,9 @@ sed -e "s|username: git|username: gitlab|" \
 rm .flayignore
 rm .gitignore
 rm .csscomb.json
+rm docker-compose.yml
 find -name .gitkeep | xargs rm
+rm -r lib/support/{deploy,init.d}
 
 %build
 %if %{with gem_cache}
@@ -262,7 +264,6 @@ fi
 %dir %attr(755,%{uname},%{gname}) %{homedir}/.bundle
 %attr(-,%{uname},%{gname}) %{homedir}/.bundle/config
 %attr(-,%{uname},%{gname}) %{homedir}/.foreman
-%attr(-,%{uname},%{gname}) %{homedir}/docker-compose.yml
 %attr(-,%{uname},%{gname}) %{homedir}/.gitattributes
 %attr(-,%{uname},%{gname}) %{homedir}/.*.yml
 %attr(-,%{uname},%{gname}) %{homedir}/.rspec
