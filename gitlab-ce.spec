@@ -102,7 +102,7 @@ bundle install %{_smp_mflags} \
 	--deployment \
 	--without development test aws %{!?with_krb5:kerberos}
 
-bundle exec rake RAILS_ENV=production assets:precompile
+bundle exec rake RAILS_ENV=production assets:clean assets:precompile USE_DB=false
 
 # avoid bogus ruby dep
 chmod a-x vendor/bundle/ruby/gems/unicorn-*/bin/unicorn*
