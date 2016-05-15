@@ -17,7 +17,7 @@
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
 Version:	8.7.5
-Release:	0.13
+Release:	0.15
 License:	MIT
 Group:		Applications/WWW
 # md5 deliberately omitted until this package is useful
@@ -101,8 +101,17 @@ bundle install %{_smp_mflags} \
 	--deployment \
 	--without development test aws %{!?with_krb5:kerberos}
 
+bundle exec rake RAILS_ENV=production assets:precompile
+
 # avoid bogus ruby dep
 chmod a-x vendor/bundle/ruby/gems/unicorn-*/bin/unicorn*
+
+# remove secrets, log and cache that assets compile initialized
+rm .gitlab_shell_secret
+rm .secret
+rm config/secrets.yml
+rm log/production.log
+rm -r tmp/cache/*
 
 %if %{with gem_cache}
 install -d "$cachedir"
