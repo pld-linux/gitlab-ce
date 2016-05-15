@@ -1,5 +1,5 @@
---- gitlabhq-8.7.5/config/gitlab.yml	2016-05-12 17:35:19.000000000 +0300
-+++ gitlabhq-8.7.5.paths/config/gitlab.yml	2016-05-15 21:30:47.260578333 +0300
+--- gitlabhq-8.7.5.paths/config/gitlab.yml	2016-05-15 21:30:47.260578333 +0300
++++ gitlabhq-8.7.5/config/gitlab.yml	2016-05-15 10:55:03.000000000 +0300
 @@ -56,7 +56,7 @@
        #- 2001:0db8::/32
  
@@ -18,7 +18,7 @@
  
    ## Backup settings
    backup:
-@@ -437,11 +437,11 @@
+@@ -437,15 +437,15 @@
  
    ## GitLab Shell settings
    gitlab_shell:
@@ -33,6 +33,11 @@
  
      # File that contains the secret key for verifying access for gitlab-shell.
      # Default is '.gitlab_shell_secret' relative to Rails.root (i.e. root of the GitLab app).
+-    # secret_file: /home/git/gitlab/.gitlab_shell_secret
++    secret_file: /etc/gitlab/.gitlab_shell_secret
+ 
+     # Git over HTTP
+     upload_pack: true
 --- gitlabhq-8.7.5/config/unicorn.rb	2016-05-12 17:35:19.000000000 +0300
 +++ gitlabhq-8.7.5.paths/config/unicorn.rb	2016-05-15 21:30:47.263911838 +0300
 @@ -33,12 +33,12 @@
