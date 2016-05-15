@@ -73,9 +73,11 @@ use on your server(s).
 %setup -qn gitlabhq-%{version}
 mv config/gitlab.yml.example config/gitlab.yml
 mv config/unicorn.rb.example config/unicorn.rb
-mv config/database.yml.mysql config/database.yml
 %patch0 -p1
 %patch1 -p1
+
+# use mysql for now
+mv config/database.yml.mysql config/database.yml
 
 rm .flayignore
 rm .gitignore

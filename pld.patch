@@ -67,3 +67,27 @@
  
  # combine Ruby 2.0.0dev or REE with "preload_app true" for memory savings
  # http://rubyenterpriseedition.com/faq.html#adapt_apps_for_cow
+--- gitlabhq-8.7.5/config/database.yml.mysql	2016-05-12 17:35:19.000000000 +0300
++++ gitlabhq-8.7.5/config/database.yml	2016-04-17 13:53:42.000000000 +0300
+@@ -8,8 +8,8 @@
+   reconnect: false
+   database: gitlabhq_production
+   pool: 10
+-  username: git
+-  password: "secure password"
++  username: mysql
++  password: ~
+   # host: localhost
+   # socket: /tmp/mysql.sock
+ 
+@@ -23,8 +23,8 @@
+   reconnect: false
+   database: gitlabhq_development
+   pool: 5
+-  username: root
+-  password: "secure password"
++  username: mysql
++  password: ~
+   # socket: /tmp/mysql.sock
+ 
+ # Warning: The database defined as "test" will be erased and
