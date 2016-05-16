@@ -17,7 +17,7 @@
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
 Version:	8.7.5
-Release:	0.22
+Release:	0.25
 License:	MIT
 Group:		Applications/WWW
 # md5 deliberately omitted until this package is useful
@@ -79,13 +79,29 @@ mv config/unicorn.rb.example config/unicorn.rb
 # use mysql for now
 mv config/database.yml.mysql config/database.yml
 
-rm .flayignore
-rm .gitignore
-rm .csscomb.json
-rm .gitattributes
-rm docker-compose.yml
 find -name .gitkeep | xargs rm
+rm -r docker
+rm -r features
+rm -r fixtures
 rm -r lib/support/{deploy,init.d}
+rm -r scripts
+rm -r spec
+rm .csscomb.json
+rm .flayignore
+rm .foreman
+rm .gitattributes
+rm .gitignore
+rm .gitlab-ci.yml
+rm .hound.yml
+rm .pkgr.yml
+rm .rspec
+rm .rubocop.yml
+rm .scss-lint.yml
+rm .simplecov
+rm .teatro.yml
+rm Procfile
+rm bin/pkgr_before_precompile.sh
+rm docker-compose.yml
 
 %build
 %if %{with gem_cache}
@@ -235,10 +251,6 @@ fi
 %attr(-,%{uname},%{gname}) %{homedir}/db/*
 %dir %attr(755,%{uname},%{gname}) %{homedir}/doc
 %attr(-,%{uname},%{gname}) %{homedir}/doc/*
-%dir %attr(755,%{uname},%{gname}) %{homedir}/docker
-%attr(-,%{uname},%{gname}) %{homedir}/docker/*
-%dir %attr(755,%{uname},%{gname}) %{homedir}/features
-%attr(-,%{uname},%{gname}) %{homedir}/features/*
 %dir %attr(755,%{uname},%{gname}) %{homedir}/lib
 %attr(-,%{uname},%{gname}) %{homedir}/lib/*
 %dir %attr(755,%{uname},%{gname}) %{homedir}/pids
@@ -248,11 +260,7 @@ fi
 %attr(-,%{uname},%{gname}) %{homedir}/public/uploads
 %attr(-,%{uname},%{gname}) %{homedir}/public/assets
 %dir %attr(755,%{uname},%{gname}) %{homedir}/satellites
-%dir %attr(755,%{uname},%{gname}) %{homedir}/scripts
-%attr(-,%{uname},%{gname}) %{homedir}/scripts/*
 %dir %attr(755,%{uname},%{gname}) %{homedir}/sockets
-%dir %attr(755,%{uname},%{gname}) %{homedir}/spec
-%attr(-,%{uname},%{gname}) %{homedir}/spec/*
 %dir %attr(755,%{uname},%{gname}) %{homedir}/tmp
 %attr(-,%{uname},%{gname}) %{homedir}/tmp/*
 %dir %attr(755,%{uname},%{gname}) %{homedir}/www
@@ -266,22 +274,16 @@ fi
 
 %dir %attr(755,%{uname},%{gname}) %{homedir}/.bundle
 %attr(-,%{uname},%{gname}) %{homedir}/.bundle/config
-%attr(-,%{uname},%{gname}) %{homedir}/.foreman
-%attr(-,%{uname},%{gname}) %{homedir}/.*.yml
-%attr(-,%{uname},%{gname}) %{homedir}/.rspec
 %attr(-,%{uname},%{gname}) %{homedir}/.ruby-version
-%attr(-,%{uname},%{gname}) %{homedir}/.simplecov
 %attr(-,%{uname},%{gname}) %{homedir}/CHANGELOG
 %attr(-,%{uname},%{gname}) %{homedir}/GITLAB_WORKHORSE_VERSION
 %attr(-,%{uname},%{gname}) %{homedir}/GITLAB_SHELL_VERSION
 %attr(-,%{uname},%{gname}) %{homedir}/Gemfile*
 %attr(-,%{uname},%{gname}) %{homedir}/LICENSE
 %attr(-,%{uname},%{gname}) %{homedir}/*.md
-%attr(-,%{uname},%{gname}) %{homedir}/Procfile
 %attr(-,%{uname},%{gname}) %{homedir}/Rakefile
 %attr(-,%{uname},%{gname}) %{homedir}/VERSION
 %attr(-,%{uname},%{gname}) %{homedir}/config.ru
-%attr(-,%{uname},%{gname}) %{homedir}/fixtures
 
 %{homedir}/log
 %dir %attr(771,root,%{gname}) /var/log/gitlab
