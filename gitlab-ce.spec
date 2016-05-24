@@ -16,7 +16,7 @@
 
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
-Version:	8.7.5
+Version:	8.8.1
 Release:	0.25
 License:	MIT
 Group:		Applications/WWW
@@ -254,6 +254,9 @@ fi
 %dir %attr(755,%{uname},%{gname}) %{homedir}/lib
 %attr(-,%{uname},%{gname}) %{homedir}/lib/*
 %dir %attr(755,%{uname},%{gname}) %{homedir}/pids
+
+%{homedir}/generator_templates
+
 %dir %{homedir}/public
 %{homedir}/public/ci
 %{homedir}/public/*.*
