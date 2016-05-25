@@ -140,7 +140,7 @@ install -d \
 	$RPM_BUILD_ROOT%{homedir}/www \
 	$RPM_BUILD_ROOT%{homedir}/public/{assets,uploads} \
 	$RPM_BUILD_ROOT%{homedir}/satellites \
-	$RPM_BUILD_ROOT%{homedir}/tmp/{cache/assets,sessions} \
+	$RPM_BUILD_ROOT%{homedir}/tmp/{cache/assets,sessions,backups} \
 	$RPM_BUILD_ROOT%{_sysconfdir}/gitlab \
 	$RPM_BUILD_ROOT%{_docdir}/gitlab \
 	$RPM_BUILD_ROOT%{_localstatedir}/{run,log}/gitlab
