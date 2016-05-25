@@ -1,1 +1,1 @@
-d /run/gitlab 0755 gitlab gitlab -
+d /var/run/gitlab 0771 root gitlab -

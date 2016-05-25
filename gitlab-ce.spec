@@ -17,7 +17,7 @@
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
 Version:	8.8.1
-Release:	0.25
+Release:	0.28
 License:	MIT
 Group:		Applications/WWW
 # md5 deliberately omitted until this package is useful
@@ -143,6 +143,7 @@ install -d \
 	$RPM_BUILD_ROOT%{homedir}/tmp/{cache/assets,sessions} \
 	$RPM_BUILD_ROOT%{_sysconfdir}/gitlab \
 	$RPM_BUILD_ROOT%{_docdir}/gitlab \
+	$RPM_BUILD_ROOT%{_localstatedir}/{run,log}/gitlab
 
 # test if we can hardlink -- %{_builddir} and $RPM_BUILD_ROOT on same partition
 if cp -al VERSION $RPM_BUILD_ROOT/VERSION 2>/dev/null; then
@@ -160,11 +161,10 @@ chmod -R u+w $RPM_BUILD_ROOT%{homedir}/vendor/bundle/ruby/gems/*/test
 rm -r $RPM_BUILD_ROOT%{homedir}/vendor/bundle/ruby/gems/*/test
 
 # Creating links
-ln -fs /run/gitlab $RPM_BUILD_ROOT%{homedir}/pids
-ln -fs /run/gitlab $RPM_BUILD_ROOT%{homedir}/sockets
-rmdir $RPM_BUILD_ROOT%{homedir}/log
-ln -fs %{_localstatedir}/log/gitlab $RPM_BUILD_ROOT%{homedir}/log
-install -d $RPM_BUILD_ROOT%{_localstatedir}/log/gitlab
+rmdir $RPM_BUILD_ROOT%{homedir}/{log,tmp/{pids,sockets}}
+ln -s %{_localstatedir}/run/gitlab $RPM_BUILD_ROOT%{homedir}/tmp/pids
+ln -s %{_localstatedir}/run/gitlab $RPM_BUILD_ROOT%{homedir}/tmp/sockets
+ln -s %{_localstatedir}/log/gitlab $RPM_BUILD_ROOT%{homedir}/log
 
 move_config() {
 	local source=$1 target=$2
@@ -252,7 +252,6 @@ fi
 %attr(-,%{uname},%{gname}) %{homedir}/doc/*
 %dir %attr(755,%{uname},%{gname}) %{homedir}/lib
 %attr(-,%{uname},%{gname}) %{homedir}/lib/*
-%dir %attr(755,%{uname},%{gname}) %{homedir}/pids
 
 %{homedir}/fixtures
 %{homedir}/generator_templates
@@ -263,9 +262,14 @@ fi
 %attr(-,%{uname},%{gname}) %{homedir}/public/uploads
 %attr(-,%{uname},%{gname}) %{homedir}/public/assets
 %dir %attr(755,%{uname},%{gname}) %{homedir}/satellites
-%dir %attr(755,%{uname},%{gname}) %{homedir}/sockets
+
 %dir %attr(755,%{uname},%{gname}) %{homedir}/tmp
-%attr(-,%{uname},%{gname}) %{homedir}/tmp/*
+%attr(-,%{uname},%{gname}) %{homedir}/tmp/backups
+%attr(-,%{uname},%{gname}) %{homedir}/tmp/cache
+%attr(-,%{uname},%{gname}) %{homedir}/tmp/sessions
+%attr(-,%{uname},%{gname}) %{homedir}/tmp/sockets
+%attr(-,%{uname},%{gname}) %{homedir}/tmp/pids
+
 %dir %attr(755,%{uname},%{gname}) %{homedir}/www
 
 %dir %attr(750,%{uname},%{gname}) %{homedir}/shared
@@ -290,7 +294,8 @@ fi
 %attr(-,%{uname},%{gname}) %{homedir}/config.ru
 
 %{homedir}/log
-%dir %attr(771,root,%{gname}) /var/log/gitlab
+%dir %attr(771,root,%{gname}) %{_localstatedir}/log/gitlab
+%dir %attr(771,root,%{gname}) %{_localstatedir}/run/gitlab
 
 %defattr(-,root,root,-)
 %dir %{homedir}/vendor
