@@ -82,7 +82,6 @@ mv config/database.yml.mysql config/database.yml
 find -name .gitkeep | xargs rm
 rm -r docker
 rm -r features
-rm -r fixtures
 rm -r lib/support/{deploy,init.d}
 rm -r scripts
 rm -r spec
@@ -255,6 +254,7 @@ fi
 %attr(-,%{uname},%{gname}) %{homedir}/lib/*
 %dir %attr(755,%{uname},%{gname}) %{homedir}/pids
 
+%{homedir}/fixtures
 %{homedir}/generator_templates
 
 %dir %{homedir}/public
