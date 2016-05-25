@@ -17,13 +17,14 @@
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
 Version:	8.8.1
-Release:	0.28
+Release:	0.32
 License:	MIT
 Group:		Applications/WWW
 # md5 deliberately omitted until this package is useful
 Source0:	https://github.com/gitlabhq/gitlabhq/archive/v%{version}/%{name}-%{version}.tar.gz
 Patch0:		https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/3774.patch
 Patch1:		pld.patch
+Patch2:		bug-14972.patch
 Source1:	gitlab.target
 Source2:	gitlab-sidekiq.service
 Source3:	gitlab-sidekiq.init
@@ -75,6 +76,7 @@ mv config/gitlab.yml.example config/gitlab.yml
 mv config/unicorn.rb.example config/unicorn.rb
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 # use mysql for now
 mv config/database.yml.mysql config/database.yml

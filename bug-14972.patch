@@ -1,0 +1,26 @@
+
+pin newer rugged
+https://gitlab.com/gitlab-org/gitlab-ce/issues/14972
+
+--- gitlabhq-8.8.1/Gemfile.lock~	2016-05-23 04:59:54.000000000 +0300
++++ gitlabhq-8.8.1/Gemfile.lock	2016-05-25 19:17:33.860299743 +0300
+@@ -354,7 +354,7 @@
+       activesupport (~> 4.0)
+       charlock_holmes (~> 0.7.3)
+       github-linguist (~> 4.7.0)
+-      rugged (~> 0.24.0)
++      rugged (~> 0.25.0b3)
+     gitlab_meta (7.0)
+     gitlab_omniauth-ldap (1.2.1)
+       net-ldap (~> 0.9)
+--- gitlabhq-8.8.1/Gemfile~	2016-05-23 04:59:54.000000000 +0300
++++ gitlabhq-8.8.1/Gemfile	2016-05-26 00:46:10.646707081 +0300
+@@ -53,6 +53,8 @@
+ # Extracting information from a git repository
+ # Provide access to Gitlab::Git library
+ gem "gitlab_git", '~> 10.0'
++# Pin for https://gitlab.com/gitlab-org/gitlab-ce/issues/14972
++gem "rugged", '~> 0.25.0b3'
+ 
+ # LDAP Auth
+ # GitLab fork with several improvements to original library. For full list of changes
