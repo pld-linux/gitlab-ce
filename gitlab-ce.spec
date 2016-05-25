@@ -274,6 +274,7 @@ fi
 %dir %attr(750,%{uname},%{gname}) %{homedir}/shared/artifacts/tmp/cache
 %dir %attr(750,%{uname},%{gname}) %{homedir}/shared/artifacts/tmp/uploads
 %dir %attr(750,%{uname},%{gname}) %{homedir}/shared/lfs-objects
+%dir %attr(750,%{uname},%{gname}) %{homedir}/shared/registry
 
 %dir %attr(755,%{uname},%{gname}) %{homedir}/.bundle
 %attr(-,%{uname},%{gname}) %{homedir}/.bundle/config
