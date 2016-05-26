@@ -17,14 +17,11 @@
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
 Version:	8.8.1
-Release:	0.33
+Release:	0.34
 License:	MIT
 Group:		Applications/WWW
 # md5 deliberately omitted until this package is useful
 Source0:	https://github.com/gitlabhq/gitlabhq/archive/v%{version}/%{name}-%{version}.tar.gz
-Patch0:		3774.patch
-Patch1:		pld.patch
-Patch2:		bug-14972.patch
 Source1:	gitlab.target
 Source2:	gitlab-sidekiq.service
 Source3:	gitlab-sidekiq.init
@@ -35,6 +32,10 @@ Source7:	gitlab.tmpfiles.d
 Source8:	gitlab-apache-conf
 Source9:	gitlab-rake.sh
 Source10:	gitconfig
+Source11:	gitlab-ctl.sh
+Patch0:		3774.patch
+Patch1:		pld.patch
+Patch2:		bug-14972.patch
 URL:		https://www.gitlab.com/gitlab-ce/
 BuildRequires:	cmake
 BuildRequires:	gmp-devel
@@ -193,6 +194,7 @@ cp -p %{SOURCE6} $RPM_BUILD_ROOT/etc/logrotate.d/gitlab.logrotate
 cp -p %{SOURCE8} $RPM_BUILD_ROOT/etc/httpd/webapps.d/gitlab.conf
 cp -p %{SOURCE10} $RPM_BUILD_ROOT%{homedir}/.gitconfig
 install -p %{SOURCE9} $RPM_BUILD_ROOT%{_sbindir}/gitlab-rake
+install -p %{SOURCE11} $RPM_BUILD_ROOT%{_sbindir}/gitlab-ctl
 
 %clean
 rm -rf "$RPM_BUILD_ROOT"
@@ -235,6 +237,7 @@ fi
 %attr(754,root,root) /etc/rc.d/init.d/gitlab-sidekiq
 %attr(754,root,root) /etc/rc.d/init.d/gitlab-unicorn
 %attr(755,root,root) %{_sbindir}/gitlab-rake
+%attr(755,root,root) %{_sbindir}/gitlab-ctl
 %{systemdunitdir}/gitlab-sidekiq.service
 %{systemdunitdir}/gitlab-unicorn.service
 %{systemdunitdir}/gitlab.target
