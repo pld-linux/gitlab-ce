@@ -22,7 +22,7 @@ License:	MIT
 Group:		Applications/WWW
 # md5 deliberately omitted until this package is useful
 Source0:	https://github.com/gitlabhq/gitlabhq/archive/v%{version}/%{name}-%{version}.tar.gz
-Patch0:		https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/3774.patch
+Patch0:		3774.patch
 Patch1:		pld.patch
 Patch2:		bug-14972.patch
 Source1:	gitlab.target
