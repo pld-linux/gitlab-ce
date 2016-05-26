@@ -17,7 +17,7 @@
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
 Version:	8.8.1
-Release:	0.32
+Release:	0.33
 License:	MIT
 Group:		Applications/WWW
 # md5 deliberately omitted until this package is useful
