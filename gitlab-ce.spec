@@ -182,6 +182,7 @@ move_config() {
 for f in gitlab.yml unicorn.rb database.yml; do
 	move_config %{homedir}/config/$f %{_sysconfdir}/gitlab/$f
 done
+touch $RPM_BUILD_ROOT%{_sysconfdir}/gitlab/skip-auto-migrations
 
 install -d $RPM_BUILD_ROOT{%{_sbindir},%{systemdunitdir},%{systemdtmpfilesdir}} \
 	$RPM_BUILD_ROOT/etc/{logrotate.d,rc.d/init.d,httpd/webapps.d}
@@ -226,7 +227,7 @@ if [ $1 -eq 1 ]; then
 	systemctl -q start gitlab-unicorn
 	systemctl -q start gitlab-sidekiq
 	systemctl -q start gitlab.target
-	echo "Create and configure database in /etc/gitlab/database.yml"
+	echo "Create and configure database in %{_sysconfdir}/gitlab/database.yml"
 	echo "Then run 'sudo -u gitlab bundle exec rake gitlab:setup RAILS_ENV=production'"
 	echo
 else
@@ -257,10 +258,11 @@ fi
 %files
 %defattr(644,root,root,755)
 %doc LICENSE
-%config(noreplace) %{_sysconfdir}/gitlab/database.yml
-%config(noreplace) %{_sysconfdir}/gitlab/gitlab.yml
-%config(noreplace) %{_sysconfdir}/gitlab/unicorn.rb
-%config(noreplace) %{_sysconfdir}/httpd/webapps.d/gitlab.conf
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/gitlab/database.yml
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/gitlab/gitlab.yml
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/gitlab/unicorn.rb
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/httpd/webapps.d/gitlab.conf
+%ghost %{_sysconfdir}/gitlab/skip-auto-migrations
 /etc/logrotate.d/gitlab.logrotate
 %attr(754,root,root) /etc/rc.d/init.d/gitlab-sidekiq
 %attr(754,root,root) /etc/rc.d/init.d/gitlab-unicorn
