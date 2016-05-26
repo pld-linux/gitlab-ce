@@ -202,6 +202,12 @@ install -p %{SOURCE11} $RPM_BUILD_ROOT%{_sbindir}/gitlab-ctl
 %clean
 rm -rf "$RPM_BUILD_ROOT"
 
+%pre
+if [ "$2" = "2" ]; then
+	# Looks like an RPM upgrade
+	gitlab-ctl preinst
+fi
+
 %post
 /sbin/chkconfig --add gitlab-sidekiq
 /sbin/chkconfig --add gitlab-unicorn
@@ -226,6 +232,12 @@ if [ $1 -eq 1 ]; then
 else
 	systemctl -q try-restart gitlab-unicorn || :
 	systemctl -q try-start gitlab-sidekiq || :
+fi
+
+%posttrans
+if [ "$1" = "0" ]; then
+	# Looks like an RPM upgrade
+	gitlab-ctl posttrans
 fi
 
 %preun
