@@ -46,13 +46,16 @@ BuildRequires:	libxml2-devel
 BuildRequires:	mysql-devel
 BuildRequires:	postgresql-devel
 BuildRequires:	rpm-rubyprov
+BuildRequires:	rpmbuild(macros) >= 1.228
 BuildRequires:	ruby-bundler
 BuildRequires:	ruby-devel >= 1:2.1.0
 BuildRequires:	zlib-devel
+Requires(post,preun):	/sbin/chkconfig
 Requires:	apache-base
 Requires:	git-core >= 2.7.4
 Requires:	gitlab-shell >= 2.7.2
 Requires:	nodejs
+Requires:	rc-scripts
 Requires:	ruby-bundler
 Suggests:	mysql
 Suggests:	redis-server
@@ -200,6 +203,11 @@ install -p %{SOURCE11} $RPM_BUILD_ROOT%{_sbindir}/gitlab-ctl
 rm -rf "$RPM_BUILD_ROOT"
 
 %post
+/sbin/chkconfig --add gitlab-sidekiq
+/sbin/chkconfig --add gitlab-unicorn
+%service gitlab-sidekiq restart
+%service gitlab-unicorn restart
+
 if [ $1 -ge 1 ]; then
 	systemctl -q daemon-reload
 	systemd-tmpfiles --create %{systemdtmpfilesdir}/gitlab.conf
@@ -218,6 +226,14 @@ if [ $1 -eq 1 ]; then
 else
 	systemctl -q try-restart gitlab-unicorn || :
 	systemctl -q try-start gitlab-sidekiq || :
+fi
+
+%preun
+if [ "$1" = "0" ]; then
+	%service -q gitlab-sidekiq stop
+	%service -q gitlab-unicorn stop
+	/sbin/chkconfig --del gitlab-sidekiq
+	/sbin/chkconfig --del gitlab-unicorn
 fi
 
 %postun
