@@ -80,7 +80,7 @@ mv config/gitlab.yml.example config/gitlab.yml
 mv config/unicorn.rb.example config/unicorn.rb
 %patch0 -p1
 %patch1 -p1
-%patch2 -p1
+#%patch2 -p1
 
 # use mysql for now
 mv config/database.yml.mysql config/database.yml
