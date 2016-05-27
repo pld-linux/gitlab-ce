@@ -11,6 +11,10 @@ die() {
 	exit 1
 }
 
+notice() {
+	echo "gitlab $*"
+}
+
 # Migrate the database (options: VERSION=x, VERBOSE=false, SCOPE=blog)
 upgrade() {
 	gitlab-rake db:migrate "$@"
@@ -30,9 +34,11 @@ restart() {
 # https://gitlab.com/gitlab-org/omnibus-gitlab/blob/8.8.1+ce.0/config/templates/package-scripts/preinst.erb#L10
 preinst() {
 	if [ -f $auto_migrations_skip_file ]; then
-		echo >&2 "Found $auto_migrations_skip_file, skipping auto backup..."
+		notice "preinstall: Found $auto_migrations_skip_file, skipping auto backup..."
 		return
 	fi
+
+	notice "preinstall: Automatically backing up only the GitLab SQL database (excluding everything else!)"
 
 	if ! backup SKIP=repositories,uploads,builds,artifacts,lfs,registry; then
 		cat >&2 <<-EOF
