@@ -204,7 +204,7 @@ install -p %{SOURCE11} $RPM_BUILD_ROOT%{_sbindir}/gitlab-ctl
 rm -rf "$RPM_BUILD_ROOT"
 
 %pre
-if [ "$2" = "2" ]; then
+if [ "$1" = "2" ]; then
 	# Looks like an RPM upgrade
 	gitlab-ctl preinst
 fi
