@@ -1,5 +1,5 @@
---- gitlabhq-8.7.5.paths/config/gitlab.yml	2016-05-15 21:30:47.260578333 +0300
-+++ gitlabhq-8.7.5/config/gitlab.yml	2016-05-15 10:55:03.000000000 +0300
+--- gitlabhq-8.10.2/config/gitlab.yml~	2016-07-28 14:33:30.000000000 +0300
++++ gitlabhq-8.10.2/config/gitlab.yml	2016-07-28 14:34:15.268930594 +0300
 @@ -56,7 +56,7 @@
        #- 2001:0db8::/32
  
@@ -18,17 +18,13 @@
  
    ## Backup settings
    backup:
-@@ -437,15 +437,15 @@
+@@ -458,12 +458,12 @@
  
    ## GitLab Shell settings
    gitlab_shell:
 -    path: /home/git/gitlab-shell/
-+    path: /usr/share/gitlab-shell/
- 
-     # REPOS_PATH MUST NOT BE A SYMLINK!!!
--    repos_path: /home/git/repositories/
 -    hooks_path: /home/git/gitlab-shell/hooks/
-+    repos_path: /var/lib/gitlab/repositories/
++    path: /usr/share/gitlab-shell/
 +    hooks_path: /usr/share/gitlab-shell/hooks/
  
      # File that contains the secret key for verifying access for gitlab-shell.

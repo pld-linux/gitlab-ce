@@ -16,7 +16,7 @@
 
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
-Version:	8.8.5
+Version:	8.10.2
 Release:	0.37
 License:	MIT
 Group:		Applications/WWW
@@ -78,7 +78,7 @@ use on your server(s).
 %setup -qn gitlabhq-%{version}
 mv config/gitlab.yml.example config/gitlab.yml
 mv config/unicorn.rb.example config/unicorn.rb
-%patch0 -p1
+#%patch0 -p1
 %patch1 -p1
 #%patch2 -p1
 
@@ -86,9 +86,11 @@ mv config/unicorn.rb.example config/unicorn.rb
 mv config/database.yml.mysql config/database.yml
 
 find -name .gitkeep | xargs rm
+rm -r .github
 rm -r docker
 rm -r features
 rm -r lib/support/{deploy,init.d}
+rm -r rubocop
 rm -r scripts
 rm -r spec
 rm .csscomb.json
@@ -97,13 +99,13 @@ rm .foreman
 rm .gitattributes
 rm .gitignore
 rm .gitlab-ci.yml
-rm .hound.yml
 rm .pkgr.yml
 rm .rspec
 rm .rubocop.yml
+rm .rubocop_todo.yml
 rm .scss-lint.yml
 rm .simplecov
-rm .teatro.yml
+rm .vagrant_enabled
 rm Procfile
 rm bin/pkgr_before_precompile.sh
 rm docker-compose.yml
@@ -120,8 +122,11 @@ bundle install %{_smp_mflags} \
 	--deployment \
 	--without development test aws %{!?with_krb5:kerberos}
 
+# precompile assets
+# use modified config so it doesn't croak
 cp -p config/gitlab.yml{,.production}
 sed -i -e '/secret_file:/d' config/gitlab.yml
+sed -i -e 's#/home/git/repositories/#./#' config/gitlab.yml
 bundle exec rake RAILS_ENV=production assets:clean assets:precompile USE_DB=false
 mv -f config/gitlab.yml{.production,}
 
