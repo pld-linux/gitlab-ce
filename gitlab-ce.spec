@@ -17,7 +17,7 @@
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
 Version:	8.10.3
-Release:	0.37
+Release:	0.38
 License:	MIT
 Group:		Applications/WWW
 # md5 deliberately omitted until this package is useful
@@ -53,7 +53,7 @@ BuildRequires:	zlib-devel
 Requires(post,preun):	/sbin/chkconfig
 Requires:	apache-base
 Requires:	git-core >= 2.7.4
-Requires:	gitlab-shell >= 2.7.2
+Requires:	gitlab-shell >= 3.2.1
 Requires:	nodejs
 Requires:	rc-scripts
 Requires:	ruby-bundler
