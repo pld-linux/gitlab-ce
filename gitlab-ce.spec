@@ -12,12 +12,12 @@
 #
 # Conditional build:
 %bcond_with	krb5		# build with kerberos support
-%bcond_without	gem_cache	# use local to speedup gem installation
+%bcond_without	gem_cache	# use local cache to speedup gem installation
 
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
 Version:	8.10.6
-Release:	0.43
+Release:	0.46
 License:	MIT
 Group:		Applications/WWW
 # md5 deliberately omitted until this package is useful
@@ -36,7 +36,6 @@ Source11:	gitlab-ctl.sh
 Source12:	clean-vendor.sh
 Patch0:		3774.patch
 Patch1:		pld.patch
-Patch2:		bug-14972.patch
 URL:		https://www.gitlab.com/gitlab-ce/
 BuildRequires:	cmake
 BuildRequires:	gmp-devel
@@ -81,7 +80,6 @@ mv config/gitlab.yml.example config/gitlab.yml
 mv config/unicorn.rb.example config/unicorn.rb
 #%patch0 -p1
 %patch1 -p1
-#%patch2 -p1
 
 # use mysql for now
 mv config/database.yml.mysql config/database.yml
@@ -122,6 +120,15 @@ bundle install %{_smp_mflags} \
 	--verbose \
 	--deployment \
 	--without development test aws %{!?with_krb5:kerberos}
+
+# install newer rugged to fix diff view showing garbage
+# https://gitlab.com/gitlab-org/gitlab-ce/issues/14972
+v=0.25.0b6
+bundle exec gem install -v $v rugged --no-rdoc --no-ri
+# replace the contents, yet leave it believe it has proper version installed (for gem dependencies)
+ov=0.24.0
+rm -r vendor/bundle/ruby/extensions/%{_arch}-linux/rugged-$ov
+mv vendor/bundle/ruby/extensions/%{_arch}-linux/rugged-{$v,$ov}
 
 # precompile assets
 # use modified config so it doesn't croak
@@ -210,7 +217,7 @@ install -p %{SOURCE9} $RPM_BUILD_ROOT%{_sbindir}/gitlab-rake
 install -p %{SOURCE11} $RPM_BUILD_ROOT%{_sbindir}/gitlab-ctl
 
 %clean
-rm -rf "$RPM_BUILD_ROOT"
+rm -rf $RPM_BUILD_ROOT
 
 %pre
 if [ "$1" = "2" ]; then
