@@ -54,7 +54,7 @@ clean_rubygems() {
 	# clean selected vendor, because:
 	# LoadError: cannot load such file -- dependency_detection
 	#rm -rfv gems/*/vendor
-	rm -rfv rugged-*/vendor/libgit2
+	rm -rfv gems/rugged-*/vendor
 }
 
 vendordir=$1
