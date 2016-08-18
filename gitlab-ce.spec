@@ -129,6 +129,8 @@ bundle exec gem install -v $v rugged --no-rdoc --no-ri
 ov=0.24.0
 rm -r vendor/bundle/ruby/extensions/%{_arch}-linux/rugged-$ov
 mv vendor/bundle/ruby/extensions/%{_arch}-linux/rugged-{$v,$ov}
+rm -r vendor/bundle/ruby/gems/rugged-$ov
+mv vendor/bundle/ruby/gems/rugged-{$v,$ov}
 
 # precompile assets
 # use modified config so it doesn't croak
