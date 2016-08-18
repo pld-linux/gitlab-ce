@@ -17,7 +17,7 @@
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
 Version:	8.10.6
-Release:	0.38
+Release:	0.43
 License:	MIT
 Group:		Applications/WWW
 # md5 deliberately omitted until this package is useful
@@ -33,6 +33,7 @@ Source8:	gitlab-apache-conf
 Source9:	gitlab-rake.sh
 Source10:	gitconfig
 Source11:	gitlab-ctl.sh
+Source12:	clean-vendor.sh
 Patch0:		3774.patch
 Patch1:		pld.patch
 Patch2:		bug-14972.patch
@@ -163,6 +164,9 @@ if cp -al VERSION $RPM_BUILD_ROOT/VERSION 2>/dev/null; then
 fi
 
 cp -a$l . $RPM_BUILD_ROOT%{homedir}
+
+# cleanup unneccessary cruft (gem build files, etc)
+sh -x %{SOURCE12} $RPM_BUILD_ROOT%{homedir}
 
 # rpm cruft from repackaging
 rm -f $RPM_BUILD_ROOT%{homedir}/debug*.list
