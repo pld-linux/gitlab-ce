@@ -17,7 +17,7 @@
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
 Version:	8.10.6
-Release:	0.47
+Release:	0.48
 License:	MIT
 Group:		Applications/WWW
 # md5 deliberately omitted until this package is useful
@@ -125,12 +125,6 @@ bundle install %{_smp_mflags} \
 # https://gitlab.com/gitlab-org/gitlab-ce/issues/14972
 v=0.25.0b6
 bundle exec gem install -v $v rugged --no-rdoc --no-ri --verbose
-# replace the contents, yet leave it believe it has proper version installed (for gem dependencies)
-ov=0.24.0
-rm -r vendor/bundle/ruby/extensions/%{_arch}-linux/rugged-$ov
-mv vendor/bundle/ruby/extensions/%{_arch}-linux/rugged-{$v,$ov}
-rm -r vendor/bundle/ruby/gems/rugged-$ov
-mv vendor/bundle/ruby/gems/rugged-{$v,$ov}
 
 # precompile assets
 # use modified config so it doesn't croak
@@ -176,6 +170,14 @@ cp -a$l . $RPM_BUILD_ROOT%{homedir}
 
 # cleanup unneccessary cruft (gem build files, etc)
 sh -x %{SOURCE12} $RPM_BUILD_ROOT%{homedir}
+
+# replace the contents, yet leave it believe it has proper version installed (for gem dependencies)
+v=0.25.0b6
+ov=0.24.0
+rm -r $RPM_BUILD_ROOT%{homedir}/vendor/bundle/ruby/extensions/%{_arch}-linux/rugged-$ov
+mv $RPM_BUILD_ROOT%{homedir}/vendor/bundle/ruby/extensions/%{_arch}-linux/rugged-{$v,$ov}
+rm -r $RPM_BUILD_ROOT%{homedir}/vendor/bundle/ruby/gems/rugged-$ov
+mv $RPM_BUILD_ROOT%{homedir}/vendor/bundle/ruby/gems/rugged-{$v,$ov}
 
 # rpm cruft from repackaging
 rm -f $RPM_BUILD_ROOT%{homedir}/debug*.list
