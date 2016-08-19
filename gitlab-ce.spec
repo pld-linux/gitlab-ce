@@ -17,7 +17,7 @@
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
 Version:	8.10.6
-Release:	0.48
+Release:	0.50
 License:	MIT
 Group:		Applications/WWW
 # md5 deliberately omitted until this package is useful
@@ -73,6 +73,20 @@ GitLab Community Edition (CE) is open source software to collaborate
 on code. Create projects and repositories, manage access and do code
 reviews. GitLab CE is on-premises software that you can install and
 use on your server(s).
+
+%package doc
+Summary:	Manual for GitLab
+Summary(fr.UTF-8):	Documentation pour GitLab
+Summary(it.UTF-8):	Documentazione di GitLab
+Summary(pl.UTF-8):	Podręcznik dla GitLab
+Group:		Documentation
+# noarch subpackages only when building with rpm5
+%if "%{_rpmversion}" >= "5"
+BuildArch:	noarch
+%endif
+
+%description doc
+Documentation for GitLab.
 
 %prep
 %setup -qn gitlabhq-%{version}
@@ -296,20 +310,15 @@ fi
 %dir %attr(640,%{uname},%{gname}) %{homedir}/.gitconfig
 %dir %attr(755,%{uname},%{gname}) %{homedir}/app
 %attr(-,%{uname},%{gname}) %{homedir}/app/*
-%dir %attr(755,%{uname},%{gname}) %{homedir}/bin
-%attr(-,%{uname},%{gname}) %{homedir}/bin/*
+%dir %{homedir}/bin
+%attr(-,root,root) %{homedir}/bin/*
 %dir %attr(755,%{uname},%{gname}) %{homedir}/builds
 %dir %attr(755,%{uname},%{gname}) %{homedir}/config
 %attr(-,%{uname},%{gname}) %{homedir}/config/*
-%dir %attr(755,%{uname},%{gname}) %{homedir}/db
-%attr(-,%{uname},%{gname}) %{homedir}/db/*
-%dir %attr(755,%{uname},%{gname}) %{homedir}/doc
-%attr(-,%{uname},%{gname}) %{homedir}/doc/*
-%dir %attr(755,%{uname},%{gname}) %{homedir}/lib
-%attr(-,%{uname},%{gname}) %{homedir}/lib/*
-
+%{homedir}/db
 %{homedir}/fixtures
 %{homedir}/generator_templates
+%{homedir}/lib
 
 %dir %{homedir}/public
 %{homedir}/public/ci
@@ -355,3 +364,7 @@ fi
 %defattr(-,root,root,-)
 %dir %{homedir}/vendor
 %{homedir}/vendor/*
+
+%files doc
+%defattr(644,root,root,755)
+%{homedir}/doc
