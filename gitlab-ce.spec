@@ -138,6 +138,7 @@ bundle install %{_smp_mflags} \
 # install newer rugged to fix diff view showing garbage
 # https://gitlab.com/gitlab-org/gitlab-ce/issues/14972
 v=0.25.0b6
+test -d vendor/bundle/ruby/gems/rugged-$v || \
 bundle exec gem install -v $v rugged --no-rdoc --no-ri --verbose
 
 # precompile assets
