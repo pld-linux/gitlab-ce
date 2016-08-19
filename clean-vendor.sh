@@ -26,7 +26,9 @@ clean_rubygems() {
 	# and some other files
 	rm -fv gems/*/*.gemspec
 	rm -fv gems/*/*.md
+	rm -fv gems/*/*.rdoc
 	rm -fv gems/*/*.sh
+	rm -fv gems/*/*.txt
 	rm -fv gems/*/Gemfile
 	rm -fv gems/*/Guardfile
 	rm -fv gems/*/Rakefile
