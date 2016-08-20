@@ -17,7 +17,7 @@
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
 Version:	8.10.7
-Release:	0.53
+Release:	0.54
 License:	MIT
 Group:		Applications/WWW
 # md5 deliberately omitted until this package is useful
@@ -277,8 +277,8 @@ fi
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/gitlab/database.yml
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/gitlab/gitlab.yml
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/gitlab/unicorn.rb
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/gitlab/schema.rb
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/httpd/webapps.d/gitlab.conf
+%config(noreplace) %verify(not md5 mtime size) %attr(640,%{uname},%{gname}) %{_sysconfdir}/gitlab/schema.rb
 %ghost %{_sysconfdir}/gitlab/skip-auto-migrations
 /etc/logrotate.d/gitlab.logrotate
 %attr(754,root,root) /etc/rc.d/init.d/gitlab-sidekiq
