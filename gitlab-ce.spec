@@ -17,7 +17,7 @@
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
 Version:	8.10.7
-Release:	0.52
+Release:	0.53
 License:	MIT
 Group:		Applications/WWW
 # md5 deliberately omitted until this package is useful
@@ -99,29 +99,6 @@ mv config/unicorn.rb.example config/unicorn.rb
 mv config/database.yml.mysql config/database.yml
 
 find -name .gitkeep | xargs rm
-rm -r .github
-rm -r docker
-rm -r features
-rm -r lib/support/{deploy,init.d}
-rm -r rubocop
-rm -r scripts
-rm -r spec
-rm .csscomb.json
-rm .flayignore
-rm .foreman
-rm .gitattributes
-rm .gitignore
-rm .gitlab-ci.yml
-rm .pkgr.yml
-rm .rspec
-rm .rubocop.yml
-rm .rubocop_todo.yml
-rm .scss-lint.yml
-rm .simplecov
-rm .vagrant_enabled
-rm Procfile
-rm bin/pkgr_before_precompile.sh
-rm docker-compose.yml
 
 %build
 %if %{with gem_cache}

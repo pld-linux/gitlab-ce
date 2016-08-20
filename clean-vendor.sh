@@ -1,8 +1,36 @@
 #!/bin/sh
 set -e
 
+# clean files not related for running gitlab
+clean_rootfiles() {
+	cd $root
+	rm -r .github
+	rm -r docker
+	rm -r features
+	rm -r lib/support/{deploy,init.d}
+	rm -r rubocop
+	rm -r scripts
+	rm -r spec
+	rm .csscomb.json
+	rm .flayignore
+	rm .foreman
+	rm .gitattributes
+	rm .gitignore
+	rm .gitlab-ci.yml
+	rm .pkgr.yml
+	rm .rspec
+	rm .rubocop.yml
+	rm .rubocop_todo.yml
+	rm .scss-lint.yml
+	rm .simplecov
+	rm .vagrant_enabled
+	rm Procfile
+	rm bin/pkgr_before_precompile.sh
+	rm docker-compose.yml
+}
+
 clean_rubygems() {
-	cd $vendordir/vendor/bundle/ruby
+	cd $root/vendor/bundle/ruby
 
 	# cleanup gem work files
 	# the files are not needed at runtime
@@ -59,6 +87,7 @@ clean_rubygems() {
 	rm -rfv gems/rugged-*/vendor
 }
 
-vendordir=$1
+root=$1
 
+clean_rootfiles
 clean_rubygems
