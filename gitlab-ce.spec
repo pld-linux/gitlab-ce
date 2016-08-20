@@ -17,7 +17,7 @@
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
 Version:	8.10.6
-Release:	0.51
+Release:	0.52
 License:	MIT
 Group:		Applications/WWW
 # md5 deliberately omitted until this package is useful
@@ -217,7 +217,11 @@ move_config() {
 for f in gitlab.yml unicorn.rb database.yml; do
 	move_config %{homedir}/config/$f %{_sysconfdir}/gitlab/$f
 done
+
 touch $RPM_BUILD_ROOT%{_sysconfdir}/gitlab/skip-auto-migrations
+
+# relocate to /etc as it's updated runtime, see 77cff54
+move_config %{homedir}/db/schema.rb %{_sysconfdir}/gitlab/schema.rb
 
 install -d $RPM_BUILD_ROOT{%{_sbindir},%{systemdunitdir},%{systemdtmpfilesdir}} \
 	$RPM_BUILD_ROOT/etc/{logrotate.d,rc.d/init.d,httpd/webapps.d}
@@ -296,6 +300,7 @@ fi
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/gitlab/database.yml
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/gitlab/gitlab.yml
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/gitlab/unicorn.rb
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/gitlab/schema.rb
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/httpd/webapps.d/gitlab.conf
 %ghost %{_sysconfdir}/gitlab/skip-auto-migrations
 /etc/logrotate.d/gitlab.logrotate
@@ -316,15 +321,10 @@ fi
 %dir %attr(755,%{uname},%{gname}) %{homedir}/builds
 %dir %attr(755,%{uname},%{gname}) %{homedir}/config
 %attr(-,%{uname},%{gname}) %{homedir}/config/*
+%{homedir}/db
 %{homedir}/fixtures
 %{homedir}/generator_templates
 %{homedir}/lib
-
-%dir %{homedir}/db
-%attr(-,%{uname},%{gname}) %{homedir}/db/schema.rb
-%{homedir}/db/seeds.rb
-%{homedir}/db/fixtures
-%{homedir}/db/migrate
 
 %dir %{homedir}/public
 %{homedir}/public/ci
