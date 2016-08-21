@@ -17,7 +17,7 @@
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
 Version:	8.10.7
-Release:	0.58
+Release:	0.59
 License:	MIT
 Group:		Applications/WWW
 # md5 deliberately omitted until this package is useful
@@ -185,7 +185,8 @@ ln -s %{_localstatedir}/run/gitlab $RPM_BUILD_ROOT%{homedir}/tmp/pids
 ln -s %{_localstatedir}/run/gitlab $RPM_BUILD_ROOT%{homedir}/tmp/sockets
 ln -s %{_localstatedir}/log/gitlab $RPM_BUILD_ROOT%{homedir}/log
 
-move_config() {
+# move $source to $target leaving symlink in original path
+move_symlink() {
 	local source=$1 target=$2
 	mv $RPM_BUILD_ROOT$source $RPM_BUILD_ROOT$target
 	ln -s $target $RPM_BUILD_ROOT$source
@@ -193,13 +194,16 @@ move_config() {
 
 # Install config files
 for f in gitlab.yml unicorn.rb database.yml; do
-	move_config %{homedir}/config/$f %{_sysconfdir}/gitlab/$f
+	move_symlink %{homedir}/config/$f %{_sysconfdir}/gitlab/$f
 done
+
+cp -p %{SOURCE10} $RPM_BUILD_ROOT%{_sysconfdir}/gitlab/.gitconfig
+ln -s %{_sysconfdir}/.gitconfig $RPM_BUILD_ROOT%{homedir}/.gitconfig
 
 touch $RPM_BUILD_ROOT%{_sysconfdir}/gitlab/skip-auto-migrations
 
 # relocate to /etc as it's updated runtime, see 77cff54
-move_config %{homedir}/db/schema.rb %{_sysconfdir}/gitlab/schema.rb
+move_symlink %{homedir}/db/schema.rb %{_sysconfdir}/gitlab/schema.rb
 
 install -d $RPM_BUILD_ROOT{%{_sbindir},%{systemdunitdir},%{systemdtmpfilesdir}} \
 	$RPM_BUILD_ROOT/etc/{logrotate.d,rc.d/init.d,httpd/webapps.d}
@@ -213,7 +217,6 @@ cp -p %{SOURCE1} $RPM_BUILD_ROOT%{systemdunitdir}/gitlab.target
 cp -p %{SOURCE7} $RPM_BUILD_ROOT%{systemdtmpfilesdir}/gitlab.conf
 cp -p %{SOURCE6} $RPM_BUILD_ROOT/etc/logrotate.d/gitlab.logrotate
 cp -p %{SOURCE8} $RPM_BUILD_ROOT/etc/httpd/webapps.d/gitlab.conf
-cp -p %{SOURCE10} $RPM_BUILD_ROOT%{homedir}/.gitconfig
 install -p %{SOURCE9} $RPM_BUILD_ROOT%{_sbindir}/gitlab-rake
 install -p %{SOURCE11} $RPM_BUILD_ROOT%{_sbindir}/gitlab-ctl
 
@@ -270,9 +273,10 @@ fi
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/gitlab/database.yml
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/gitlab/gitlab.yml
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/gitlab/unicorn.rb
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/httpd/webapps.d/gitlab.conf
 %config(noreplace) %verify(not md5 mtime size) %attr(640,%{uname},%{gname}) %{_sysconfdir}/gitlab/schema.rb
+%config(noreplace) %verify(not md5 mtime size) %attr(640,%{uname},%{gname}) %{_sysconfdir}/gitlab/.gitconfig
 %ghost %{_sysconfdir}/gitlab/skip-auto-migrations
+%config(noreplace) %verify(not md5 mtime size) /etc/httpd/webapps.d/gitlab.conf
 /etc/logrotate.d/gitlab.logrotate
 %attr(754,root,root) /etc/rc.d/init.d/gitlab-sidekiq
 %attr(754,root,root) /etc/rc.d/init.d/gitlab-unicorn
@@ -282,15 +286,14 @@ fi
 %{systemdunitdir}/gitlab-unicorn.service
 %{systemdunitdir}/gitlab.target
 %{systemdtmpfilesdir}/gitlab.conf
-%dir %attr(755,%{uname},%{gname}) %{homedir}
-%dir %attr(640,%{uname},%{gname}) %{homedir}/.gitconfig
-%dir %attr(755,%{uname},%{gname}) %{homedir}/app
-%attr(-,%{uname},%{gname}) %{homedir}/app/*
+
+%dir %{homedir}
+%{homedir}/.gitconfig
+%{homedir}/app
 %dir %{homedir}/bin
 %attr(-,root,root) %{homedir}/bin/*
-%dir %attr(755,%{uname},%{gname}) %{homedir}/builds
-%dir %attr(755,%{uname},%{gname}) %{homedir}/config
-%attr(-,%{uname},%{gname}) %{homedir}/config/*
+%{homedir}/builds
+%{homedir}/config
 %{homedir}/db
 %{homedir}/fixtures
 %{homedir}/generator_templates
