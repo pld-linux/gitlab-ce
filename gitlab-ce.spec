@@ -29,7 +29,7 @@ Source4:	gitlab-unicorn.service
 Source5:	gitlab-unicorn.init
 Source6:	gitlab.logrotate
 Source7:	gitlab.tmpfiles.d
-Source8:	gitlab-apache-conf
+Source8:	apache.conf
 Source9:	gitlab-rake.sh
 Source10:	gitconfig
 Source11:	gitlab-ctl.sh
