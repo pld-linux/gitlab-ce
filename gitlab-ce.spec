@@ -146,7 +146,6 @@ cp -aul vendor/bundle/* "$cachedir"
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d \
-	$RPM_BUILD_ROOT%{homedir}/www \
 	$RPM_BUILD_ROOT%{homedir}/public/{assets,uploads} \
 	$RPM_BUILD_ROOT%{homedir}/satellites \
 	$RPM_BUILD_ROOT%{homedir}/tmp/{cache/assets,sessions,backups} \
@@ -310,8 +309,6 @@ fi
 %attr(-,%{uname},%{gname}) %{homedir}/tmp/sessions
 %attr(-,%{uname},%{gname}) %{homedir}/tmp/sockets
 %attr(-,%{uname},%{gname}) %{homedir}/tmp/pids
-
-%dir %attr(755,%{uname},%{gname}) %{homedir}/www
 
 %dir %attr(750,%{uname},%{gname}) %{homedir}/shared
 %dir %attr(750,%{uname},%{gname}) %{homedir}/shared/artifacts
