@@ -16,5 +16,10 @@ do
 	unset $ruby_env_var
 done
 
+# Rake with no params does nothing useful
+# (currently it switches env production->test and then fails)
+# so instead show defined tasks
+test $# = 0 && set -- -T
+
 cd /var/lib/gitlab
 exec sudo -u git bundle exec rake RAILS_ENV=production "$@"
