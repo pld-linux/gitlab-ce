@@ -34,6 +34,7 @@ Source9:	gitlab-rake.sh
 Source10:	gitconfig
 Source11:	gitlab-ctl.sh
 Source12:	clean-vendor.sh
+Source13:	nginx.conf
 Patch0:		3774.patch
 Patch1:		pld.patch
 URL:		https://www.gitlab.com/gitlab-ce/
