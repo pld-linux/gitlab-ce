@@ -17,7 +17,7 @@
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
 Version:	8.10.7
-Release:	0.54
+Release:	0.58
 License:	MIT
 Group:		Applications/WWW
 # md5 deliberately omitted until this package is useful
@@ -47,7 +47,7 @@ BuildRequires:	libxml2-devel
 BuildRequires:	mysql-devel
 BuildRequires:	postgresql-devel
 BuildRequires:	rpm-rubyprov
-BuildRequires:	rpmbuild(macros) >= 1.228
+BuildRequires:	rpmbuild(macros) >= 1.647
 BuildRequires:	ruby-bundler
 BuildRequires:	ruby-devel >= 1:2.1.0
 BuildRequires:	zlib-devel
@@ -58,6 +58,7 @@ Requires:	gitlab-shell >= 3.2.1
 Requires:	nodejs
 Requires:	rc-scripts
 Requires:	ruby-bundler
+Requires:	systemd-units >= 0.38
 Suggests:	mysql
 Suggests:	redis-server
 Obsoletes:	gitlab <= 8.1.4
@@ -231,26 +232,16 @@ fi
 /sbin/chkconfig --add gitlab-unicorn
 %service gitlab-sidekiq restart
 %service gitlab-unicorn restart
+%systemd_post gitlab-sidekiq.service gitlab-unicorn.service
 
-if [ $1 -ge 1 ]; then
-	systemctl -q daemon-reload
-	systemd-tmpfiles --create %{systemdtmpfilesdir}/gitlab.conf
-	[ -e %{_localstatedir}/lock/subsys/httpd ] && service httpd reload || :
-fi
-if [ $1 -eq 1 ]; then
-	systemctl -q enable gitlab-unicorn
-	systemctl -q enable gitlab-sidekiq
-	systemctl -q enable gitlab.target
-	systemctl -q start gitlab-unicorn
-	systemctl -q start gitlab-sidekiq
-	systemctl -q start gitlab.target
-	echo "Create and configure database in %{_sysconfdir}/gitlab/database.yml"
-	echo "Then run 'gitlab-rake gitlab:setup'"
-	echo
-else
-	systemctl -q try-restart gitlab-unicorn || :
-	systemctl -q try-start gitlab-sidekiq || :
-fi
+%banner -e -o %{name} << EOF
+
+Create and configure database in %{_sysconfdir}/gitlab/database.yml
+
+Then run:
+  # gitlab-rake gitlab:setup
+
+EOF
 
 %posttrans
 if [ "$1" = "0" ]; then
@@ -265,12 +256,14 @@ if [ "$1" = "0" ]; then
 	/sbin/chkconfig --del gitlab-sidekiq
 	/sbin/chkconfig --del gitlab-unicorn
 fi
+%systemd_preun gitlab-sidekiq.service gitlab-unicorn.service
 
 %postun
 if [ $1 -eq 0 ]; then
 	%userremove gitlab
 	%groupremove gitlab
 fi
+%systemd_reload
 
 %files
 %defattr(644,root,root,755)
