@@ -77,6 +77,6 @@ backup)
 	backup "$@"
 	;;
 upgrade)
-	upgrade
+	upgrade "$@"
 	;;
 esac
