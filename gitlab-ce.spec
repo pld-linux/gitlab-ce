@@ -244,7 +244,7 @@ if [ $1 -eq 1 ]; then
 	systemctl -q start gitlab-sidekiq
 	systemctl -q start gitlab.target
 	echo "Create and configure database in %{_sysconfdir}/gitlab/database.yml"
-	echo "Then run 'sudo -u gitlab bundle exec rake gitlab:setup RAILS_ENV=production'"
+	echo "Then run 'gitlab-rake gitlab:setup'"
 	echo
 else
 	systemctl -q try-restart gitlab-unicorn || :
