@@ -1,0 +1,247 @@
+revert https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5281
+hack due https://github.com/ruby-prof/ruby-prof/pull/191
+
+--- b/Gemfile
++++ a/Gemfile
+@@ -334,8 +334,6 @@
+ 
+ gem 'email_reply_parser', '~> 0.5.8'
+ 
+-gem 'ruby-prof', '~> 0.15.9'
+-
+ ## CI
+ gem 'activerecord-session_store', '~> 1.0.0'
+ gem 'nested_form', '~> 0.3.2'
+--- b/Gemfile.lock
++++ a/Gemfile.lock
+@@ -620,7 +620,6 @@
+       rubocop (>= 0.40.0)
+     ruby-fogbugz (0.2.1)
+       crack (~> 0.4)
+-    ruby-prof (0.15.9)
+     ruby-progressbar (1.8.1)
+     ruby-saml (1.3.0)
+       nokogiri (>= 1.5.10)
+@@ -949,7 +948,6 @@
+   rubocop (~> 0.41.2)
+   rubocop-rspec (~> 1.5.0)
+   ruby-fogbugz (~> 0.2.1)
+-  ruby-prof (~> 0.15.9)
+   sanitize (~> 2.0)
+   sass-rails (~> 5.0.0)
+   scss_lint (~> 0.47.0)
+--- b/app/controllers/admin/requests_profiles_controller.rb
++++ /dev/null
+@@ -1,17 +0,0 @@
+-class Admin::RequestsProfilesController < Admin::ApplicationController
+-  def index
+-    @profile_token = Gitlab::RequestProfiler.profile_token
+-    @profiles      = Gitlab::RequestProfiler::Profile.all.group_by(&:request_path)
+-  end
+-
+-  def show
+-    clean_name = Rack::Utils.clean_path_info(params[:name])
+-    profile    = Gitlab::RequestProfiler::Profile.find(clean_name)
+-
+-    if profile
+-      render text: profile.content
+-    else
+-      redirect_to admin_requests_profiles_path, alert: 'Profile not found'
+-    end
+-  end
+-end
+--- b/app/views/admin/background_jobs/_head.html.haml
++++ a/app/views/admin/background_jobs/_head.html.haml
+@@ -16,7 +16,3 @@
+       = link_to admin_health_check_path, title: 'Health Check' do
+         %span
+           Health Check
+-    = nav_link(controller: :requests_profiles) do
+-      = link_to admin_requests_profiles_path, title: 'Requests Profiles' do
+-        %span
+-          Requests Profiles
+--- b/app/views/admin/requests_profiles/index.html.haml
++++ /dev/null
+@@ -1,26 +0,0 @@
+-- @no_container = true
+-- page_title 'Requests Profiles'
+-= render 'admin/background_jobs/head'
+-
+-%div{ class: container_class }
+-  %h3.page-title
+-    = page_title
+-
+-  .bs-callout.clearfix
+-    Pass the header
+-    %code X-Profile-Token: #{@profile_token}
+-    to profile the request
+-
+-  - if @profiles.present?
+-    .prepend-top-default
+-      - @profiles.each do |path, profiles|
+-        .panel.panel-default.panel-small
+-          .panel-heading
+-            %code= path
+-          %ul.content-list
+-            - profiles.each do |profile|
+-              %li
+-                = link_to profile.time.to_s(:long), admin_requests_profile_path(profile), data: {no_turbolink: true}
+-  - else
+-    %p
+-      No profiles found
+--- b/app/views/layouts/nav/_admin.html.haml
++++ a/app/views/layouts/nav/_admin.html.haml
+@@ -9,7 +9,7 @@
+       = link_to admin_root_path, title: 'Overview', class: 'shortcuts-tree' do
+         %span
+           Overview
++    = nav_link(controller: %w(system_info background_jobs logs health_check)) do
+-    = nav_link(controller: %w(system_info background_jobs logs health_check requests_profiles)) do
+       = link_to admin_system_info_path, title: 'Monitoring' do
+         %span
+           Monitoring
+--- b/app/workers/requests_profiles_worker.rb
++++ /dev/null
+@@ -1,9 +0,0 @@
+-class RequestsProfilesWorker
+-  include Sidekiq::Worker
+-
+-  sidekiq_options queue: :default
+-
+-  def perform
+-    Gitlab::RequestProfiler.remove_all_profiles
+-  end
+-end
+--- gitlabhq-8.11.0/config/initializers/request_profiler.rb	2016-08-22 15:27:22.000000000 +0300
++++ /dev/null	2007-02-13 18:29:53.000000000 +0200
+@@ -1,5 +0,0 @@
+-require 'gitlab/request_profiler/middleware'
+-
+-Rails.application.configure do |config|
+-  config.middleware.use(Gitlab::RequestProfiler::Middleware)
+-end
+--- b/lib/gitlab/request_profiler.rb
++++ /dev/null
+@@ -1,19 +0,0 @@
+-require 'fileutils'
+-
+-module Gitlab
+-  module RequestProfiler
+-    PROFILES_DIR = "#{Gitlab.config.shared.path}/tmp/requests_profiles"
+-
+-    def profile_token
+-      Rails.cache.fetch('profile-token') do
+-        Devise.friendly_token
+-      end
+-    end
+-    module_function :profile_token
+-
+-    def remove_all_profiles
+-      FileUtils.rm_rf(PROFILES_DIR)
+-    end
+-    module_function :remove_all_profiles
+-  end
+-end
+--- gitlabhq-8.11.0/lib/gitlab/request_profiler/middleware.rb	2016-08-22 15:27:22.000000000 +0300
++++ /dev/null	2007-02-13 18:29:53.000000000 +0200
+@@ -1,54 +0,0 @@
+-require 'ruby-prof'
+-require_dependency 'gitlab/request_profiler'
+-
+-module Gitlab
+-  module RequestProfiler
+-    class Middleware
+-      def initialize(app)
+-        @app = app
+-      end
+-
+-      def call(env)
+-        if profile?(env)
+-          call_with_profiling(env)
+-        else
+-          @app.call(env)
+-        end
+-      end
+-
+-      def profile?(env)
+-        header_token = env['HTTP_X_PROFILE_TOKEN']
+-        return unless header_token.present?
+-
+-        profile_token = RequestProfiler.profile_token
+-        return unless profile_token.present?
+-
+-        header_token == profile_token
+-      end
+-
+-      def call_with_profiling(env)
+-        ret = nil
+-        result = RubyProf::Profile.profile do
+-          ret = catch(:warden) do
+-            @app.call(env)
+-          end
+-        end
+-
+-        printer   = RubyProf::CallStackPrinter.new(result)
+-        file_name = "#{env['PATH_INFO'].tr('/', '|')}_#{Time.current.to_i}.html"
+-        file_path = "#{PROFILES_DIR}/#{file_name}"
+-
+-        FileUtils.mkdir_p(PROFILES_DIR)
+-        File.open(file_path, 'wb') do |file|
+-          printer.print(file)
+-        end
+-
+-        if ret.is_a?(Array)
+-          ret
+-        else
+-          throw(:warden, ret)
+-        end
+-      end
+-    end
+-  end
+-end
+--- b/lib/gitlab/request_profiler/profile.rb
++++ /dev/null
+@@ -1,43 +0,0 @@
+-module Gitlab
+-  module RequestProfiler
+-    class Profile
+-      attr_reader :name, :time, :request_path
+-
+-      alias_method :to_param, :name
+-
+-      def self.all
+-        Dir["#{PROFILES_DIR}/*.html"].map do |path|
+-          new(File.basename(path))
+-        end
+-      end
+-
+-      def self.find(name)
+-        name_dup = name.dup
+-        name_dup << '.html' unless name.end_with?('.html')
+-
+-        file_path = "#{PROFILES_DIR}/#{name_dup}"
+-        return unless File.exist?(file_path)
+-
+-        new(name_dup)
+-      end
+-
+-      def initialize(name)
+-        @name = name
+-
+-        set_attributes
+-      end
+-
+-      def content
+-        File.read("#{PROFILES_DIR}/#{name}")
+-      end
+-
+-      private
+-
+-      def set_attributes
+-        _, path, timestamp = name.split(/(.*)_(\d+)\.html$/)
+-        @request_path      = path.tr('|', '/')
+-        @time              = Time.at(timestamp.to_i).utc
+-      end
+-    end
+-  end
+-end
