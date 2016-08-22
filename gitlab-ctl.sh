@@ -66,7 +66,8 @@ posttrans() {
 	EOF
 }
 
-case "$1" in
+COMMAND=$1; shift
+case "$COMMAND" in
 preinst)
 	preinst
 	;;
