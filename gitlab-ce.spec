@@ -16,8 +16,8 @@
 
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
-Version:	8.10.7
-Release:	0.59
+Version:	8.11.0
+Release:	0.60
 License:	MIT
 Group:		Applications/WWW
 # md5 deliberately omitted until this package is useful
@@ -54,7 +54,7 @@ BuildRequires:	zlib-devel
 Requires(post,preun):	/sbin/chkconfig
 Requires:	apache-base
 Requires:	git-core >= 2.7.4
-Requires:	gitlab-shell >= 3.2.1
+Requires:	gitlab-shell >= 3.4.0
 Requires:	nodejs
 Requires:	rc-scripts
 Requires:	ruby-bundler
@@ -133,7 +133,6 @@ chmod a-x vendor/bundle/ruby/gems/unicorn-*/bin/unicorn*
 
 # remove secrets, log and cache that assets compile initialized
 rm .gitlab_shell_secret
-rm .secret
 rm config/secrets.yml
 rm log/production.log
 rm -r tmp/cache/*

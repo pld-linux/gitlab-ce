@@ -17,12 +17,12 @@ clean_rootfiles() {
 	rm .gitattributes
 	rm .gitignore
 	rm .gitlab-ci.yml
+	rm .mailmap
 	rm .pkgr.yml
 	rm .rspec
 	rm .rubocop.yml
 	rm .rubocop_todo.yml
 	rm .scss-lint.yml
-	rm .simplecov
 	rm .vagrant_enabled
 	rm Procfile
 	rm bin/pkgr_before_precompile.sh
