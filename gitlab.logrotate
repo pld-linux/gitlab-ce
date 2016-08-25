@@ -1,10 +1,10 @@
-/var/lib/gitlab/log/application.log
-/var/lib/gitlab/log/development.log
-/var/lib/gitlab/log/githost.log
-/var/lib/gitlab/log/production.log
-/var/lib/gitlab/log/sidekiq.log
-/var/lib/gitlab/log/unicorn.stderr.log
-/var/lib/gitlab/log/unicorn.stdout.log
+/var/log/gitlab/application.log
+/var/log/gitlab/development.log
+/var/log/gitlab/githost.log
+/var/log/gitlab/production.log
+/var/log/gitlab/sidekiq.log
+/var/log/gitlab/unicorn.stderr.log
+/var/log/gitlab/unicorn.stdout.log
 {
     rotate 7
     daily

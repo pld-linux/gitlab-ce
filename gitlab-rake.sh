@@ -21,5 +21,5 @@ done
 # so instead show defined tasks
 test $# = 0 && set -- -T
 
-cd /var/lib/gitlab
+cd /usr/lib/gitlab
 exec sudo -u git bundle exec rake RAILS_ENV=production "$@"

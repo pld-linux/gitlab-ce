@@ -11,12 +11,12 @@ Description=GitLab Unicorn Server
 
 [Service]
 User=gitlab
-WorkingDirectory=/var/lib/gitlab
+WorkingDirectory=/usr/lib/gitlab
 Environment=RAILS_ENV=production
 SyslogIdentifier=gitlab-unicorn
-PIDFile=/var/lib/gitlab/pids/unicorn.pid
+PIDFile=/usr/lib/gitlab/pids/unicorn.pid
 
-ExecStart=/var/lib/gitlab/bin/bundle exec "unicorn_rails -c /var/lib/gitlab/config/unicorn.rb -E production"
+ExecStart=/usr/bin/bundle exec "unicorn_rails -c /etc/gitlab/unicorn.rb -E production"
 ExecStop=kill -QUIT $MAINPID
 ExecReload=kill -USR2 $MAINPID
 

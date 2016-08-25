@@ -41,7 +41,7 @@
  # Help ensure your application will always spawn in the symlinked
  # "current" directory that Capistrano sets up.
 -working_directory "/home/git/gitlab" # available in 0.94.0+
-+working_directory "/var/lib/gitlab" # available in 0.94.0+
++working_directory "/usr/lib/gitlab" # available in 0.94.0+
  
  # Listen on both a Unix domain socket and a TCP port.
  # If you are load-balancing multiple Unicorn masters, lower the backlog
@@ -63,8 +63,8 @@
  # so prevent them from going to /dev/null when daemonized here:
 -stderr_path "/home/git/gitlab/log/unicorn.stderr.log"
 -stdout_path "/home/git/gitlab/log/unicorn.stdout.log"
-+stderr_path "/var/lib/gitlab/log/unicorn.stderr.log"
-+stdout_path "/var/lib/gitlab/log/unicorn.stdout.log"
++stderr_path "/var/log/gitlab/unicorn.stderr.log"
++stdout_path "/var/log/gitlab/unicorn.stdout.log"
  
  # combine Ruby 2.0.0dev or REE with "preload_app true" for memory savings
  # http://rubyenterpriseedition.com/faq.html#adapt_apps_for_cow

@@ -17,7 +17,7 @@
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
 Version:	8.11.2
-Release:	0.61
+Release:	0.62
 License:	MIT
 Group:		Applications/WWW
 # md5 deliberately omitted until this package is useful
@@ -68,7 +68,8 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define	uname git
 %define gname git
-%define homedir %{_localstatedir}/lib/gitlab
+%define homedir %{_prefix}/lib/gitlab
+%define vardir  %{_localstatedir}/lib/gitlab
 
 %description
 GitLab Community Edition (CE) is open source software to collaborate

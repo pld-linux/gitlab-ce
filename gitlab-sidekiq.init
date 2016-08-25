@@ -31,7 +31,7 @@ RAILS_ENV="production"
 
 # The username and path to the gitlab source
 USER=git
-APP_PATH=/var/lib/gitlab
+APP_PATH=/usr/lib/gitlab
 
 # The PID and LOCK files used by unicorn and sidekiq
 pidfile=$APP_PATH/tmp/pids/sidekiq.pid
