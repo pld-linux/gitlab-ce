@@ -17,7 +17,7 @@
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
 Version:	8.11.2
-Release:	0.60
+Release:	0.61
 License:	MIT
 Group:		Applications/WWW
 # md5 deliberately omitted until this package is useful
@@ -37,7 +37,6 @@ Source12:	clean-vendor.sh
 Source13:	nginx.conf
 Patch0:		3774.patch
 Patch1:		pld.patch
-Patch2:		revert-5281.patch
 URL:		https://www.gitlab.com/gitlab-ce/
 BuildRequires:	cmake
 BuildRequires:	gmp-devel
@@ -97,7 +96,6 @@ mv config/gitlab.yml.example config/gitlab.yml
 mv config/unicorn.rb.example config/unicorn.rb
 #%patch0 -p1
 %patch1 -p1
-%patch2 -p1
 
 # use mysql for now
 mv config/database.yml.mysql config/database.yml
@@ -111,6 +109,9 @@ install -d vendor/bundle
 test -d "$cachedir" && cp -aul "$cachedir"/* vendor/bundle
 %endif
 
+# enable-gems to workaround https://github.com/ruby-prof/ruby-prof/pull/191
+# until https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/6026 is merged
+RUBYOPT=--enable-gems \
 bundle install %{_smp_mflags} \
 	--verbose \
 	--deployment \
