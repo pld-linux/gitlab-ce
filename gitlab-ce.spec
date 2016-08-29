@@ -202,7 +202,7 @@ for f in gitlab.yml unicorn.rb database.yml; do
 done
 
 cp -p %{SOURCE10} $RPM_BUILD_ROOT%{_sysconfdir}/gitlab/.gitconfig
-ln -s %{_sysconfdir}/.gitconfig $RPM_BUILD_ROOT%{homedir}/.gitconfig
+ln -s %{_sysconfdir}/gitlab/.gitconfig $RPM_BUILD_ROOT%{homedir}/.gitconfig
 
 touch $RPM_BUILD_ROOT%{_sysconfdir}/gitlab/skip-auto-migrations
 
