@@ -17,7 +17,7 @@
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
 Version:	8.11.2
-Release:	0.65
+Release:	0.66
 License:	MIT
 Group:		Applications/WWW
 # md5 deliberately omitted until this package is useful
@@ -137,8 +137,7 @@ chmod a-x vendor/bundle/ruby/gems/unicorn-*/bin/unicorn*
 
 # remove secrets, log and cache that assets compile initialized
 rm .gitlab_shell_secret
-rm config/secrets.yml
-touch config/secrets.yml
+cp -f config/secrets.yml{.example,}
 rm log/production.log
 rm -r tmp/cache/*
 
@@ -281,9 +280,9 @@ fi
 %doc LICENSE
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/gitlab/database.yml
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/gitlab/gitlab.yml
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/gitlab/secrets.yml
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/gitlab/unicorn.rb
 %config(noreplace) %verify(not md5 mtime size) %attr(640,%{uname},%{gname}) %{_sysconfdir}/gitlab/schema.rb
+%config(noreplace) %verify(not md5 mtime size) %attr(640,%{uname},%{gname}) %{_sysconfdir}/gitlab/secrets.yml
 %config(noreplace) %verify(not md5 mtime size) %attr(640,%{uname},%{gname}) %{_sysconfdir}/gitlab/.gitconfig
 %ghost %{_sysconfdir}/gitlab/skip-auto-migrations
 %config(noreplace) %verify(not md5 mtime size) /etc/httpd/webapps.d/gitlab.conf
