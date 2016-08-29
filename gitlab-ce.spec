@@ -17,7 +17,7 @@
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
 Version:	8.11.2
-Release:	0.62
+Release:	0.63
 License:	MIT
 Group:		Applications/WWW
 # md5 deliberately omitted until this package is useful
@@ -154,6 +154,7 @@ install -d \
 	$RPM_BUILD_ROOT%{homedir}/tmp/{cache/assets,sessions,backups} \
 	$RPM_BUILD_ROOT%{_sysconfdir}/gitlab \
 	$RPM_BUILD_ROOT%{_docdir}/gitlab \
+	$RPM_BUILD_ROOT%{vardir}/public \
 	$RPM_BUILD_ROOT%{_localstatedir}/{run,log}/gitlab
 
 # test if we can hardlink -- %{_builddir} and $RPM_BUILD_ROOT on same partition
@@ -207,6 +208,10 @@ touch $RPM_BUILD_ROOT%{_sysconfdir}/gitlab/skip-auto-migrations
 
 # relocate to /etc as it's updated runtime, see 77cff54
 move_symlink %{homedir}/db/schema.rb %{_sysconfdir}/gitlab/schema.rb
+
+for a in satellites shared tmp public/{uploads,assets}; do
+	move_symlink %{homedir}/$a %{vardir}/$a
+done
 
 install -d $RPM_BUILD_ROOT{%{_sbindir},%{systemdunitdir},%{systemdtmpfilesdir}} \
 	$RPM_BUILD_ROOT/etc/{logrotate.d,rc.d/init.d,httpd/webapps.d}
@@ -291,53 +296,53 @@ fi
 %{systemdtmpfilesdir}/gitlab.conf
 
 %dir %{homedir}
-%{homedir}/.gitconfig
-%{homedir}/app
 %dir %{homedir}/bin
 %attr(-,root,root) %{homedir}/bin/*
+# files
+%{homedir}/*.md
+%{homedir}/.gitconfig
+%{homedir}/.bundle
+%{homedir}/.ruby-version
+%{homedir}/CHANGELOG
+%{homedir}/GITLAB_SHELL_VERSION
+%{homedir}/GITLAB_WORKHORSE_VERSION
+%{homedir}/Gemfile*
+%{homedir}/LICENSE
+%{homedir}/Rakefile
+%{homedir}/VERSION
+%{homedir}/config.ru
+
+# dirs
+%{homedir}/app
 %{homedir}/builds
 %{homedir}/config
 %{homedir}/db
 %{homedir}/fixtures
 %{homedir}/generator_templates
 %{homedir}/lib
-
-%dir %{homedir}/public
-%{homedir}/public/ci
-%{homedir}/public/*.*
-%attr(-,%{uname},%{gname}) %{homedir}/public/uploads
-%attr(-,%{uname},%{gname}) %{homedir}/public/assets
-%dir %attr(755,%{uname},%{gname}) %{homedir}/satellites
-
-%dir %attr(755,%{uname},%{gname}) %{homedir}/tmp
-%attr(-,%{uname},%{gname}) %{homedir}/tmp/backups
-%attr(-,%{uname},%{gname}) %{homedir}/tmp/cache
-%attr(-,%{uname},%{gname}) %{homedir}/tmp/sessions
-%attr(-,%{uname},%{gname}) %{homedir}/tmp/sockets
-%attr(-,%{uname},%{gname}) %{homedir}/tmp/pids
-
-%dir %attr(750,%{uname},%{gname}) %{homedir}/shared
-%dir %attr(750,%{uname},%{gname}) %{homedir}/shared/artifacts
-%dir %attr(750,%{uname},%{gname}) %{homedir}/shared/artifacts/tmp
-%dir %attr(750,%{uname},%{gname}) %{homedir}/shared/artifacts/tmp/cache
-%dir %attr(750,%{uname},%{gname}) %{homedir}/shared/artifacts/tmp/uploads
-%dir %attr(750,%{uname},%{gname}) %{homedir}/shared/lfs-objects
-%dir %attr(750,%{uname},%{gname}) %{homedir}/shared/registry
-
-%dir %attr(755,%{uname},%{gname}) %{homedir}/.bundle
-%attr(-,%{uname},%{gname}) %{homedir}/.bundle/config
-%attr(-,%{uname},%{gname}) %{homedir}/.ruby-version
-%attr(-,%{uname},%{gname}) %{homedir}/CHANGELOG
-%attr(-,%{uname},%{gname}) %{homedir}/GITLAB_WORKHORSE_VERSION
-%attr(-,%{uname},%{gname}) %{homedir}/GITLAB_SHELL_VERSION
-%attr(-,%{uname},%{gname}) %{homedir}/Gemfile*
-%attr(-,%{uname},%{gname}) %{homedir}/LICENSE
-%attr(-,%{uname},%{gname}) %{homedir}/*.md
-%attr(-,%{uname},%{gname}) %{homedir}/Rakefile
-%attr(-,%{uname},%{gname}) %{homedir}/VERSION
-%attr(-,%{uname},%{gname}) %{homedir}/config.ru
-
 %{homedir}/log
+%{homedir}/public
+%{homedir}/shared
+%{homedir}/tmp
+
+%dir %{vardir}
+%dir %attr(755,%{uname},%{gname}) %{vardir}/satellites
+%attr(-,%{uname},%{gname}) %{vardir}/public/uploads
+%attr(-,%{uname},%{gname}) %{vardir}/public/assets
+%dir %attr(755,%{uname},%{gname}) %{vardir}/tmp
+%attr(-,%{uname},%{gname}) %{vardir}/tmp/backups
+%attr(-,%{uname},%{gname}) %{vardir}/tmp/cache
+%attr(-,%{uname},%{gname}) %{vardir}/tmp/sessions
+%attr(-,%{uname},%{gname}) %{vardir}/tmp/sockets
+%attr(-,%{uname},%{gname}) %{vardir}/tmp/pids
+%dir %attr(750,%{uname},%{gname}) %{vardir}/shared
+%dir %attr(750,%{uname},%{gname}) %{vardir}/shared/artifacts
+%dir %attr(750,%{uname},%{gname}) %{vardir}/shared/artifacts/tmp
+%dir %attr(750,%{uname},%{gname}) %{vardir}/shared/artifacts/tmp/cache
+%dir %attr(750,%{uname},%{gname}) %{vardir}/shared/artifacts/tmp/uploads
+%dir %attr(750,%{uname},%{gname}) %{vardir}/shared/lfs-objects
+%dir %attr(750,%{uname},%{gname}) %{vardir}/shared/registry
+
 %dir %attr(771,root,%{gname}) %{_localstatedir}/log/gitlab
 %dir %attr(771,root,%{gname}) %{_localstatedir}/run/gitlab
 
