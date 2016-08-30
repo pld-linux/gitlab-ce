@@ -57,9 +57,13 @@ clean_rubygems() {
 	rm -fv gems/*/*.rdoc
 	rm -fv gems/*/*.sh
 	rm -fv gems/*/*.txt
+	rm -fv gems/*/*LICENSE*
+	rm -fv gems/*/CHANGES*
 	rm -fv gems/*/Gemfile
 	rm -fv gems/*/Guardfile
+	rm -fv gems/*/README*
 	rm -fv gems/*/Rakefile
+	rm -fv gems/*/run_tests.rb
 	rm -rfv gems/*/Documentation
 	rm -rfv gems/*/bench
 	rm -rfv gems/*/contrib
@@ -67,19 +71,16 @@ clean_rubygems() {
 	rm -rfv gems/*/doc-api
 	rm -rfv gems/*/examples
 	rm -rfv gems/*/ext
+	rm -rfv gems/*/fixtures
 	rm -rfv gems/*/gemfiles
 	rm -rfv gems/*/libtest
 	rm -rfv gems/*/man
+	rm -rfv gems/*/sample_documents
+	rm -rfv gems/*/samples
 	rm -rfv gems/*/script
 	rm -rfv gems/*/t
+	rm -rfv gems/*/test
 	rm -rfv gems/*/tests
-	rm -rfv gems/*/sample_documents
-	rm -rfv gems/*/fixtures
-	rm -rfv gems/*/samples
-	rm -fv gems/*/run_tests.rb
-	rm -fv gems/*/*LICENSE*
-	rm -fv gems/*/CHANGES*
-	rm -fv gems/*/README*
 
 	# clean selected vendor, because:
 	# LoadError: cannot load such file -- dependency_detection

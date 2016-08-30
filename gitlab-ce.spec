@@ -17,7 +17,7 @@
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
 Version:	8.11.3
-Release:	0.67
+Release:	0.68
 License:	MIT
 Group:		Applications/WWW
 # md5 deliberately omitted until this package is useful
@@ -178,10 +178,6 @@ mv $RPM_BUILD_ROOT%{homedir}/vendor/bundle/ruby/gems/rugged-{$v,$ov}
 
 # rpm cruft from repackaging
 rm -f $RPM_BUILD_ROOT%{homedir}/debug*.list
-
-# nuke tests
-chmod -R u+w $RPM_BUILD_ROOT%{homedir}/vendor/bundle/ruby/gems/*/test
-rm -r $RPM_BUILD_ROOT%{homedir}/vendor/bundle/ruby/gems/*/test
 
 # Creating links
 rmdir $RPM_BUILD_ROOT%{homedir}/{log,tmp/{pids,sockets}}
