@@ -17,7 +17,7 @@
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
 Version:	8.11.3
-Release:	0.69
+Release:	0.70
 License:	MIT
 Group:		Applications/WWW
 # md5 deliberately omitted until this package is useful
@@ -207,7 +207,7 @@ touch $RPM_BUILD_ROOT%{_sysconfdir}/gitlab/skip-auto-migrations
 # relocate to /etc as it's updated runtime, see 77cff54
 move_symlink %{homedir}/db/schema.rb %{_sysconfdir}/gitlab/schema.rb
 
-for a in satellites shared tmp public/{uploads,assets}; do
+for a in satellites builds shared tmp public/{uploads,assets}; do
 	move_symlink %{homedir}/$a %{vardir}/$a
 done
 
@@ -330,6 +330,7 @@ fi
 
 %dir %{vardir}
 %dir %attr(755,%{uname},%{gname}) %{vardir}/satellites
+%dir %attr(755,%{uname},%{gname}) %{vardir}/builds
 %dir %{vardir}/public
 %attr(-,%{uname},%{gname}) %{vardir}/public/uploads
 %attr(-,%{uname},%{gname}) %{vardir}/public/assets
