@@ -17,7 +17,7 @@
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
 Version:	8.11.3
-Release:	0.68
+Release:	0.69
 License:	MIT
 Group:		Applications/WWW
 # md5 deliberately omitted until this package is useful
@@ -70,6 +70,7 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define gname git
 %define homedir %{_prefix}/lib/gitlab
 %define vardir  %{_localstatedir}/lib/gitlab
+%define cachedir  %{_localstatedir}/cache/gitlab
 
 %description
 GitLab Community Edition (CE) is open source software to collaborate
@@ -155,6 +156,7 @@ install -d \
 	$RPM_BUILD_ROOT%{_sysconfdir}/gitlab \
 	$RPM_BUILD_ROOT%{_docdir}/gitlab \
 	$RPM_BUILD_ROOT%{vardir}/public \
+	$RPM_BUILD_ROOT%{cachedir}/tmp \
 	$RPM_BUILD_ROOT%{_localstatedir}/{run,log}/gitlab
 
 # test if we can hardlink -- %{_builddir} and $RPM_BUILD_ROOT on same partition
@@ -208,6 +210,9 @@ move_symlink %{homedir}/db/schema.rb %{_sysconfdir}/gitlab/schema.rb
 for a in satellites shared tmp public/{uploads,assets}; do
 	move_symlink %{homedir}/$a %{vardir}/$a
 done
+
+move_symlink %{vardir}/tmp/cache %{cachedir}/cache
+move_symlink %{vardir}/shared/artifacts/tmp/cache %{cachedir}/artifacts
 
 install -d $RPM_BUILD_ROOT{%{_sbindir},%{systemdunitdir},%{systemdtmpfilesdir}} \
 	$RPM_BUILD_ROOT/etc/{logrotate.d,rc.d/init.d,httpd/webapps.d}
@@ -330,18 +335,21 @@ fi
 %attr(-,%{uname},%{gname}) %{vardir}/public/assets
 %dir %attr(755,%{uname},%{gname}) %{vardir}/tmp
 %attr(-,%{uname},%{gname}) %{vardir}/tmp/backups
-%attr(-,%{uname},%{gname}) %{vardir}/tmp/cache
+%{vardir}/tmp/cache
 %attr(-,%{uname},%{gname}) %{vardir}/tmp/sessions
 %attr(-,%{uname},%{gname}) %{vardir}/tmp/sockets
 %attr(-,%{uname},%{gname}) %{vardir}/tmp/pids
 %dir %attr(750,%{uname},%{gname}) %{vardir}/shared
 %dir %attr(750,%{uname},%{gname}) %{vardir}/shared/artifacts
 %dir %attr(750,%{uname},%{gname}) %{vardir}/shared/artifacts/tmp
-%dir %attr(750,%{uname},%{gname}) %{vardir}/shared/artifacts/tmp/cache
+%{vardir}/shared/artifacts/tmp/cache
 %dir %attr(750,%{uname},%{gname}) %{vardir}/shared/artifacts/tmp/uploads
 %dir %attr(750,%{uname},%{gname}) %{vardir}/shared/lfs-objects
 %dir %attr(750,%{uname},%{gname}) %{vardir}/shared/registry
 
+%dir %attr(750,root,%{gname}) %{cachedir}
+%attr(-,%{uname},%{gname}) %{cachedir}/cache
+%dir %attr(750,%{uname},%{gname}) %{cachedir}/artifacts
 
 %dir %attr(771,root,%{gname}) %{_localstatedir}/log/gitlab
 %dir %attr(771,root,%{gname}) %{_localstatedir}/run/gitlab
