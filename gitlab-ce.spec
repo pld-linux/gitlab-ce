@@ -17,7 +17,7 @@
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
 Version:	8.11.3
-Release:	0.66
+Release:	0.67
 License:	MIT
 Group:		Applications/WWW
 # md5 deliberately omitted until this package is useful
@@ -120,7 +120,7 @@ bundle install %{_smp_mflags} \
 
 # install newer rugged to fix diff view showing garbage
 # https://gitlab.com/gitlab-org/gitlab-ce/issues/14972
-v=0.25.0b6
+v=0.25.0b7
 test -d vendor/bundle/ruby/gems/rugged-$v || \
 bundle exec gem install -v $v rugged --no-rdoc --no-ri --verbose
 
@@ -169,7 +169,7 @@ cp -a$l . $RPM_BUILD_ROOT%{homedir}
 sh -x %{SOURCE12} $RPM_BUILD_ROOT%{homedir}
 
 # replace the contents, yet leave it believe it has proper version installed (for gem dependencies)
-v=0.25.0b6
+v=0.25.0b7
 ov=0.24.0
 rm -r $RPM_BUILD_ROOT%{homedir}/vendor/bundle/ruby/extensions/%{_arch}-linux/rugged-$ov
 mv $RPM_BUILD_ROOT%{homedir}/vendor/bundle/ruby/extensions/%{_arch}-linux/rugged-{$v,$ov}
