@@ -17,7 +17,7 @@
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
 Version:	8.11.4
-Release:	0.72
+Release:	0.73
 License:	MIT
 Group:		Applications/WWW
 # md5 deliberately omitted until this package is useful
@@ -201,7 +201,7 @@ for f in gitlab.yml unicorn.rb database.yml secrets.yml; do
 done
 
 cp -p %{SOURCE10} $RPM_BUILD_ROOT%{_sysconfdir}/gitlab/.gitconfig
-ln -s %{_sysconfdir}/gitlab/.gitconfig $RPM_BUILD_ROOT%{homedir}/.gitconfig
+ln -s %{_sysconfdir}/gitlab/.gitconfig $RPM_BUILD_ROOT%{vardir}/.gitconfig
 
 touch $RPM_BUILD_ROOT%{_sysconfdir}/gitlab/skip-auto-migrations
 
@@ -303,7 +303,6 @@ fi
 %attr(-,root,root) %{homedir}/bin/*
 # files
 %{homedir}/*.md
-%{homedir}/.gitconfig
 %{homedir}/.bundle
 %{homedir}/.ruby-version
 %{homedir}/CHANGELOG
@@ -330,6 +329,7 @@ fi
 %{homedir}/satellites
 
 %dir %{vardir}
+%{vardir}/.gitconfig
 %dir %attr(755,%{uname},%{gname}) %{vardir}/satellites
 %dir %attr(755,%{uname},%{gname}) %{vardir}/builds
 %dir %{vardir}/public
