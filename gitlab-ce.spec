@@ -69,7 +69,7 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define	uname git
 %define gname git
-%define homedir %{_prefix}/lib/gitlab
+%define appdir %{_prefix}/lib/gitlab
 %define vardir  %{_localstatedir}/lib/gitlab
 %define cachedir  %{_localstatedir}/cache/gitlab
 
@@ -151,9 +151,9 @@ cp -aul vendor/bundle/* "$cachedir"
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d \
-	$RPM_BUILD_ROOT%{homedir}/public/{assets,uploads} \
-	$RPM_BUILD_ROOT%{homedir}/satellites \
-	$RPM_BUILD_ROOT%{homedir}/tmp/{cache/assets,sessions,backups} \
+	$RPM_BUILD_ROOT%{appdir}/public/{assets,uploads} \
+	$RPM_BUILD_ROOT%{appdir}/satellites \
+	$RPM_BUILD_ROOT%{appdir}/tmp/{cache/assets,sessions,backups} \
 	$RPM_BUILD_ROOT%{_sysconfdir}/gitlab \
 	$RPM_BUILD_ROOT%{_docdir}/gitlab \
 	$RPM_BUILD_ROOT%{vardir}/public \
@@ -166,27 +166,27 @@ if cp -al VERSION $RPM_BUILD_ROOT/VERSION 2>/dev/null; then
 	rm -f $RPM_BUILD_ROOT/VERSION
 fi
 
-cp -a$l . $RPM_BUILD_ROOT%{homedir}
+cp -a$l . $RPM_BUILD_ROOT%{appdir}
 
 # cleanup unneccessary cruft (gem build files, etc)
-sh -x %{SOURCE12} $RPM_BUILD_ROOT%{homedir}
+sh -x %{SOURCE12} $RPM_BUILD_ROOT%{appdir}
 
 # replace the contents, yet leave it believe it has proper version installed (for gem dependencies)
 v=0.25.0b7
 ov=0.24.0
-rm -r $RPM_BUILD_ROOT%{homedir}/vendor/bundle/ruby/extensions/%{_arch}-linux/rugged-$ov
-mv $RPM_BUILD_ROOT%{homedir}/vendor/bundle/ruby/extensions/%{_arch}-linux/rugged-{$v,$ov}
-rm -r $RPM_BUILD_ROOT%{homedir}/vendor/bundle/ruby/gems/rugged-$ov
-mv $RPM_BUILD_ROOT%{homedir}/vendor/bundle/ruby/gems/rugged-{$v,$ov}
+rm -r $RPM_BUILD_ROOT%{appdir}/vendor/bundle/ruby/extensions/%{_arch}-linux/rugged-$ov
+mv $RPM_BUILD_ROOT%{appdir}/vendor/bundle/ruby/extensions/%{_arch}-linux/rugged-{$v,$ov}
+rm -r $RPM_BUILD_ROOT%{appdir}/vendor/bundle/ruby/gems/rugged-$ov
+mv $RPM_BUILD_ROOT%{appdir}/vendor/bundle/ruby/gems/rugged-{$v,$ov}
 
 # rpm cruft from repackaging
-rm -f $RPM_BUILD_ROOT%{homedir}/debug*.list
+rm -f $RPM_BUILD_ROOT%{appdir}/debug*.list
 
 # Creating links
-rmdir $RPM_BUILD_ROOT%{homedir}/{log,tmp/{pids,sockets}}
-ln -s %{_localstatedir}/run/gitlab $RPM_BUILD_ROOT%{homedir}/tmp/pids
-ln -s %{_localstatedir}/run/gitlab $RPM_BUILD_ROOT%{homedir}/tmp/sockets
-ln -s %{_localstatedir}/log/gitlab $RPM_BUILD_ROOT%{homedir}/log
+rmdir $RPM_BUILD_ROOT%{appdir}/{log,tmp/{pids,sockets}}
+ln -s %{_localstatedir}/run/gitlab $RPM_BUILD_ROOT%{appdir}/tmp/pids
+ln -s %{_localstatedir}/run/gitlab $RPM_BUILD_ROOT%{appdir}/tmp/sockets
+ln -s %{_localstatedir}/log/gitlab $RPM_BUILD_ROOT%{appdir}/log
 
 # move $source to $target leaving symlink in original path
 move_symlink() {
@@ -197,7 +197,7 @@ move_symlink() {
 
 # Install config files
 for f in gitlab.yml unicorn.rb database.yml secrets.yml; do
-	move_symlink %{homedir}/config/$f %{_sysconfdir}/gitlab/$f
+	move_symlink %{appdir}/config/$f %{_sysconfdir}/gitlab/$f
 done
 
 cp -p %{SOURCE10} $RPM_BUILD_ROOT%{_sysconfdir}/gitlab/.gitconfig
@@ -206,10 +206,10 @@ ln -s %{_sysconfdir}/gitlab/.gitconfig $RPM_BUILD_ROOT%{vardir}/.gitconfig
 touch $RPM_BUILD_ROOT%{_sysconfdir}/gitlab/skip-auto-migrations
 
 # relocate to /etc as it's updated runtime, see 77cff54
-move_symlink %{homedir}/db/schema.rb %{_sysconfdir}/gitlab/schema.rb
+move_symlink %{appdir}/db/schema.rb %{_sysconfdir}/gitlab/schema.rb
 
 for a in satellites builds shared tmp public/{uploads,assets}; do
-	move_symlink %{homedir}/$a %{vardir}/$a
+	move_symlink %{appdir}/$a %{vardir}/$a
 done
 
 move_symlink %{vardir}/tmp/cache %{cachedir}/cache
@@ -298,35 +298,35 @@ fi
 %{systemdunitdir}/gitlab.target
 %{systemdtmpfilesdir}/gitlab.conf
 
-%dir %{homedir}
-%dir %{homedir}/bin
-%attr(-,root,root) %{homedir}/bin/*
+%dir %{appdir}
+%dir %{appdir}/bin
+%attr(-,root,root) %{appdir}/bin/*
 # files
-%{homedir}/*.md
-%{homedir}/.bundle
-%{homedir}/.ruby-version
-%{homedir}/CHANGELOG
-%{homedir}/GITLAB_SHELL_VERSION
-%{homedir}/GITLAB_WORKHORSE_VERSION
-%{homedir}/Gemfile*
-%{homedir}/LICENSE
-%{homedir}/Rakefile
-%{homedir}/VERSION
-%{homedir}/config.ru
+%{appdir}/*.md
+%{appdir}/.bundle
+%{appdir}/.ruby-version
+%{appdir}/CHANGELOG
+%{appdir}/GITLAB_SHELL_VERSION
+%{appdir}/GITLAB_WORKHORSE_VERSION
+%{appdir}/Gemfile*
+%{appdir}/LICENSE
+%{appdir}/Rakefile
+%{appdir}/VERSION
+%{appdir}/config.ru
 
 # dirs
-%{homedir}/app
-%{homedir}/builds
-%{homedir}/config
-%{homedir}/db
-%{homedir}/fixtures
-%{homedir}/generator_templates
-%{homedir}/lib
-%{homedir}/log
-%{homedir}/public
-%{homedir}/shared
-%{homedir}/tmp
-%{homedir}/satellites
+%{appdir}/app
+%{appdir}/builds
+%{appdir}/config
+%{appdir}/db
+%{appdir}/fixtures
+%{appdir}/generator_templates
+%{appdir}/lib
+%{appdir}/log
+%{appdir}/public
+%{appdir}/shared
+%{appdir}/tmp
+%{appdir}/satellites
 
 %dir %{vardir}
 %{vardir}/.gitconfig
@@ -357,9 +357,9 @@ fi
 %dir %attr(771,root,%{gname}) %{_localstatedir}/run/gitlab
 
 %defattr(-,root,root,-)
-%dir %{homedir}/vendor
-%{homedir}/vendor/*
+%dir %{appdir}/vendor
+%{appdir}/vendor/*
 
 %files doc
 %defattr(644,root,root,755)
-%{homedir}/doc
+%{appdir}/doc
