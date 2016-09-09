@@ -66,7 +66,24 @@ posttrans() {
 	EOF
 }
 
-COMMAND=$1; shift
+usage() {
+	cat <<-EOF
+Usage: $0: command (subcommand)
+
+upgrade
+  Run migrations after a package upgrade
+
+	EOF
+}
+
+COMMAND=$1
+
+if [ -z "$COMMAND" ]; then
+	usage
+	exit 0
+fi
+
+shift
 case "$COMMAND" in
 preinst)
 	preinst
