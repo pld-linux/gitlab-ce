@@ -16,7 +16,7 @@
 
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
-Version:	8.11.7
+Version:	8.12.0
 Release:	0.74
 License:	MIT
 Group:		Applications/WWW
@@ -199,6 +199,7 @@ move_symlink() {
 for f in gitlab.yml unicorn.rb database.yml secrets.yml; do
 	move_symlink %{appdir}/config/$f %{_sysconfdir}/gitlab/$f
 done
+move_symlink %{appdir}/.gitlab_workhorse_secret %{_sysconfdir}/gitlab/.gitlab_workhorse_secret
 
 cp -p %{SOURCE10} $RPM_BUILD_ROOT%{_sysconfdir}/gitlab/.gitconfig
 ln -s %{_sysconfdir}/gitlab/.gitconfig $RPM_BUILD_ROOT%{vardir}/.gitconfig
@@ -286,6 +287,8 @@ fi
 %config(noreplace) %verify(not md5 mtime size) %attr(640,%{uname},%{gname}) %{_sysconfdir}/gitlab/schema.rb
 %config(noreplace) %verify(not md5 mtime size) %attr(640,%{uname},%{gname}) %{_sysconfdir}/gitlab/secrets.yml
 %config(noreplace) %verify(not md5 mtime size) %attr(640,%{uname},%{gname}) %{_sysconfdir}/gitlab/.gitconfig
+%config(noreplace) %verify(not md5 mtime size) %attr(640,%{uname},%{gname}) %{_sysconfdir}/gitlab/.gitlab_workhorse_secret
+
 %ghost %{_sysconfdir}/gitlab/skip-auto-migrations
 %config(noreplace) %verify(not md5 mtime size) /etc/httpd/webapps.d/gitlab.conf
 /etc/logrotate.d/gitlab.logrotate
@@ -304,6 +307,7 @@ fi
 # files
 %{appdir}/*.md
 %{appdir}/.bundle
+%{appdir}/.gitlab_workhorse_secret
 %{appdir}/.ruby-version
 %{appdir}/CHANGELOG
 %{appdir}/GITLAB_SHELL_VERSION

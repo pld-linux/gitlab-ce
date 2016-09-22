@@ -5,6 +5,8 @@ set -e
 clean_rootfiles() {
 	cd $root
 	rm -r .github
+	rm -r .gitlab
+	rm -r changelogs
 	rm -r docker
 	rm -r features
 	rm -r lib/support/{deploy,init.d}
@@ -17,6 +19,7 @@ clean_rootfiles() {
 	rm .gitattributes
 	rm .gitignore
 	rm .gitlab-ci.yml
+	rm .haml-lint.yml
 	rm .mailmap
 	rm .pkgr.yml
 	rm .rspec
