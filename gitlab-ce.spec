@@ -54,7 +54,7 @@ BuildRequires:	zlib-devel
 Requires(post,preun):	/sbin/chkconfig
 Requires:	apache-base
 Requires:	git-core >= 2.7.4
-Requires:	gitlab-shell >= 3.4.0
+Requires:	gitlab-shell >= 3.6.0
 Requires:	gitlab-workhorse >= 0.7.11
 Requires:	nodejs
 Requires:	rc-scripts
