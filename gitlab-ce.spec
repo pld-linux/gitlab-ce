@@ -18,7 +18,7 @@
 %define	workhorse_version 0.8.2
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
-Version:	8.12.1
+Version:	8.12.2
 Release:	0.76
 License:	MIT
 Group:		Applications/WWW
@@ -108,12 +108,12 @@ mv config/database.yml.mysql config/database.yml
 
 find -name .gitkeep | xargs rm
 
-%build
 v=$(cat GITLAB_SHELL_VERSION)
 test "$v" = "%{shell_version}"
 v=$(cat GITLAB_WORKHORSE_VERSION)
 test "$v" = "%{workhorse_version}"
 
+%build
 %if %{with gem_cache}
 cachedir="%{_specdir}/cache/%{version}.%{_arch}"
 install -d vendor/bundle
