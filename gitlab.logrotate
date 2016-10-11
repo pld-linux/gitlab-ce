@@ -1,21 +1,18 @@
-/var/log/gitlab/application.log
-/var/log/gitlab/development.log
-/var/log/gitlab/githost.log
 /var/log/gitlab/production.log
 /var/log/gitlab/sidekiq.log
 /var/log/gitlab/unicorn.stderr.log
 /var/log/gitlab/unicorn.stdout.log
 {
-    rotate 7
-    daily
-    maxsize 10M
-    minsize 1M
-    missingok
-    notifempty
-    compress
-    delaycompress
-    sharedscripts
-    postrotate
-        invoke-rc.d gitlab restart > /dev/null
-    endscript
+	rotate 7
+	daily
+	maxsize 10M
+	minsize 1M
+	sharedscripts
+
+	olddir /var/log/archive/gitlab
+
+	postrotate
+		service gitlab-unicorn try-restart > /dev/null
+		service gitlab-sidekiq try-restart > /dev/null
+	endscript
 }

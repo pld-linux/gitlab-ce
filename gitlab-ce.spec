@@ -56,7 +56,7 @@ BuildRequires:	zlib-devel
 Requires(post,preun):	/sbin/chkconfig
 Requires:	apache-base
 Requires:	git-core >= 2.7.4
-Requires:	gitlab-common >= 8.12
+Requires:	gitlab-common >= 8.12-2
 Requires:	gitlab-shell >= %{shell_version}
 Requires:	gitlab-workhorse >= %{workhorse_version}
 Requires:	nodejs
@@ -166,7 +166,7 @@ install -d \
 	$RPM_BUILD_ROOT%{_docdir}/gitlab \
 	$RPM_BUILD_ROOT%{vardir}/public \
 	$RPM_BUILD_ROOT%{cachedir}/tmp \
-	$RPM_BUILD_ROOT%{_localstatedir}/{run,log}/gitlab
+	$RPM_BUILD_ROOT%{_localstatedir}/run/gitlab
 
 # test if we can hardlink -- %{_builddir} and $RPM_BUILD_ROOT on same partition
 if cp -al VERSION $RPM_BUILD_ROOT/VERSION 2>/dev/null; then
@@ -234,7 +234,7 @@ install -p %{SOURCE5} $RPM_BUILD_ROOT/etc/rc.d/init.d/gitlab-unicorn
 
 cp -p %{SOURCE1} $RPM_BUILD_ROOT%{systemdunitdir}/gitlab.target
 cp -p %{SOURCE7} $RPM_BUILD_ROOT%{systemdtmpfilesdir}/gitlab.conf
-cp -p %{SOURCE6} $RPM_BUILD_ROOT/etc/logrotate.d/gitlab.logrotate
+cp -p %{SOURCE6} $RPM_BUILD_ROOT/etc/logrotate.d/gitlab
 cp -p %{SOURCE8} $RPM_BUILD_ROOT/etc/httpd/webapps.d/gitlab.conf
 install -p %{SOURCE9} $RPM_BUILD_ROOT%{_sbindir}/gitlab-rake
 install -p %{SOURCE11} $RPM_BUILD_ROOT%{_sbindir}/gitlab-ctl
@@ -299,7 +299,7 @@ fi
 
 %ghost %{_sysconfdir}/gitlab/skip-auto-migrations
 %config(noreplace) %verify(not md5 mtime size) /etc/httpd/webapps.d/gitlab.conf
-/etc/logrotate.d/gitlab.logrotate
+/etc/logrotate.d/gitlab
 %attr(754,root,root) /etc/rc.d/init.d/gitlab-sidekiq
 %attr(754,root,root) /etc/rc.d/init.d/gitlab-unicorn
 %attr(755,root,root) %{_sbindir}/gitlab-rake
@@ -364,7 +364,6 @@ fi
 %attr(-,%{uname},%{gname}) %{cachedir}/cache
 %dir %attr(750,%{uname},%{gname}) %{cachedir}/artifacts
 
-%dir %attr(771,root,%{gname}) %{_localstatedir}/log/gitlab
 %dir %attr(771,root,%{gname}) %{_localstatedir}/run/gitlab
 
 %defattr(-,root,root,-)
