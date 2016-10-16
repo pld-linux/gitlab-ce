@@ -22,4 +22,4 @@ done
 test $# = 0 && set -- -T
 
 cd /usr/lib/gitlab
-exec sudo -u git bundle exec rake RAILS_ENV=production "$@"
+exec sudo -H -u git bundle exec rake RAILS_ENV=production "$@"
