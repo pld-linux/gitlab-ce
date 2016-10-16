@@ -1,4 +1,7 @@
 #!/bin/sh
+# Upstream:
+# https://gitlab.com/gitlab-org/omnibus-gitlab/issues/1643
+
 set -e
 
 # clean files not related for running gitlab
