@@ -13,7 +13,7 @@
 	olddir /var/log/archive/gitlab
 
 	postrotate
-		service gitlab-unicorn try-restart > /dev/null
-		service gitlab-sidekiq try-restart > /dev/null
+		/sbin/service gitlab-unicorn try-restart > /dev/null
+		/sbin/service gitlab-sidekiq try-restart > /dev/null
 	endscript
 }
