@@ -19,7 +19,7 @@
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
 Version:	8.12.7
-Release:	0.76
+Release:	0.78
 License:	MIT
 Group:		Applications/WWW
 # md5 deliberately omitted until this package is useful
@@ -54,7 +54,7 @@ BuildRequires:	ruby-bundler
 BuildRequires:	ruby-devel >= 1:2.1.0
 BuildRequires:	zlib-devel
 Requires(post,preun):	/sbin/chkconfig
-Requires:	apache-base
+Requires:	webapps
 Requires:	git-core >= 2.7.4
 Requires:	gitlab-common >= 8.12-2
 Requires:	gitlab-shell >= %{shell_version}
@@ -70,11 +70,13 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define	_noautoreqfiles redcloth_scan.jar primitives.jar
 
-%define	uname git
-%define gname git
-%define appdir %{_prefix}/lib/gitlab
-%define vardir  %{_localstatedir}/lib/gitlab
-%define cachedir  %{_localstatedir}/cache/gitlab
+%define uname    git
+%define gname    git
+%define appdir   %{_prefix}/lib/gitlab
+%define vardir   %{_localstatedir}/lib/gitlab
+%define cachedir %{_localstatedir}/cache/gitlab
+%define _webapps /etc/webapps
+%define _webapp  gitlab
 
 %description
 GitLab Community Edition (CE) is open source software to collaborate
@@ -163,6 +165,7 @@ install -d \
 	$RPM_BUILD_ROOT%{appdir}/satellites \
 	$RPM_BUILD_ROOT%{appdir}/tmp/{cache/assets,sessions,backups} \
 	$RPM_BUILD_ROOT%{_sysconfdir}/gitlab \
+	$RPM_BUILD_ROOT%{_webapps}/%{_webapp} \
 	$RPM_BUILD_ROOT%{_docdir}/gitlab \
 	$RPM_BUILD_ROOT%{vardir}/public \
 	$RPM_BUILD_ROOT%{cachedir}/tmp \
@@ -235,7 +238,7 @@ install -p %{SOURCE5} $RPM_BUILD_ROOT/etc/rc.d/init.d/gitlab-unicorn
 cp -p %{SOURCE1} $RPM_BUILD_ROOT%{systemdunitdir}/gitlab.target
 cp -p %{SOURCE7} $RPM_BUILD_ROOT%{systemdtmpfilesdir}/gitlab.conf
 cp -p %{SOURCE6} $RPM_BUILD_ROOT/etc/logrotate.d/gitlab
-cp -p %{SOURCE8} $RPM_BUILD_ROOT/etc/httpd/webapps.d/gitlab.conf
+cp -p %{SOURCE8} $RPM_BUILD_ROOT%{_webapps}/%{_webapp}/httpd.conf
 install -p %{SOURCE9} $RPM_BUILD_ROOT%{_sbindir}/gitlab-rake
 install -p %{SOURCE11} $RPM_BUILD_ROOT%{_sbindir}/gitlab-ctl
 
@@ -286,6 +289,12 @@ if [ $1 -eq 0 ]; then
 fi
 %systemd_reload
 
+%triggerin -- apache < 2.2.0, apache-base
+%webapp_register httpd %{_webapp}
+
+%triggerun -- apache < 2.2.0, apache-base
+%webapp_unregister httpd %{_webapp}
+
 %files
 %defattr(644,root,root,755)
 %doc LICENSE
@@ -297,8 +306,10 @@ fi
 %config(noreplace) %verify(not md5 mtime size) %attr(640,%{uname},%{gname}) %{_sysconfdir}/gitlab/.gitconfig
 %config(noreplace) %verify(not md5 mtime size) %attr(640,%{uname},%{gname}) %{_sysconfdir}/gitlab/.gitlab_workhorse_secret
 
+%dir %attr(750,root,http) %{_webapps}/%{_webapp}
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_webapps}/%{_webapp}/httpd.conf
+
 %ghost %{_sysconfdir}/gitlab/skip-auto-migrations
-%config(noreplace) %verify(not md5 mtime size) /etc/httpd/webapps.d/gitlab.conf
 /etc/logrotate.d/gitlab
 %attr(754,root,root) /etc/rc.d/init.d/gitlab-sidekiq
 %attr(754,root,root) /etc/rc.d/init.d/gitlab-unicorn
