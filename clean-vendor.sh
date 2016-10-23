@@ -29,7 +29,6 @@ clean_rootfiles() {
 	rm .rubocop.yml
 	rm .rubocop_todo.yml
 	rm .scss-lint.yml
-	rm .vagrant_enabled
 	rm Procfile
 	rm bin/pkgr_before_precompile.sh
 	rm docker-compose.yml

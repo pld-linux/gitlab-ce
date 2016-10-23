@@ -14,12 +14,12 @@
 %bcond_with	krb5		# build with kerberos support
 %bcond_without	gem_cache	# use local cache to speedup gem installation
 
-%define	shell_version 3.6.1
-%define	workhorse_version 0.8.2
+%define	shell_version 3.6.6
+%define	workhorse_version 0.8.5
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
-Version:	8.12.7
-Release:	0.78
+Version:	8.13.0
+Release:	0.79
 License:	MIT
 Group:		Applications/WWW
 # md5 deliberately omitted until this package is useful
@@ -328,7 +328,6 @@ fi
 %{appdir}/.bundle
 %{appdir}/.gitlab_workhorse_secret
 %{appdir}/.ruby-version
-%{appdir}/CHANGELOG
 %{appdir}/GITLAB_SHELL_VERSION
 %{appdir}/GITLAB_WORKHORSE_VERSION
 %{appdir}/Gemfile*
