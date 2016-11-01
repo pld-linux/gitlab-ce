@@ -18,7 +18,7 @@
 %define	workhorse_version 0.8.5
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
-Version:	8.13.1
+Version:	8.13.2
 Release:	0.80
 License:	MIT
 Group:		Applications/WWW
