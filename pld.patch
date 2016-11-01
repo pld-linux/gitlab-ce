@@ -1,6 +1,19 @@
---- gitlabhq-8.10.2/config/gitlab.yml	2016-07-28 14:34:15.268930594 +0300
-+++ gitlabhq-8.11.3/config/gitlab.yml	2016-08-30 09:23:24.191326482 +0300
-@@ -56,7 +56,7 @@
+--- gitlabhq-8.11.3/config/gitlab.yml	2016-08-30 09:23:24.191326482 +0300
++++ gitlabhq-8.13.2/config/gitlab.yml	2016-11-01 22:24:29.430388677 +0200
+@@ -30,8 +30,10 @@
+   gitlab:
+     ## Web server settings (note: host is the FQDN, do not include http://)
+     host: localhost
+-    port: 80 # Set to 443 if using HTTPS, see installation.md#using-https for additional HTTPS configuration details
+-    https: false # Set to true if using HTTPS, see installation.md#using-https for additional HTTPS configuration details
++    # Set to 443 if using HTTPS, see installation.md#using-https for additional HTTPS configuration details
++    port: 80
++    # Set to true if using HTTPS, see installation.md#using-https for additional HTTPS configuration details
++    https: false
+ 
+     # Uncommment this line below if your ssh host is different from HTTP/HTTPS one
+     # (you'd obviously need to replace ssh.host_example.com with your own host).
+@@ -56,7 +58,7 @@
        #- 2001:0db8::/32
  
      # Uncomment and customize if you can't use the default user to run GitLab (default: 'git')
