@@ -66,6 +66,14 @@ posttrans() {
 	EOF
 }
 
+restart() {
+	local service services="gitlab-sidekiq gitlab-unicorn gitlab-workhorse"
+
+	for service in $services; do
+		service $service try-restart
+	done
+}
+
 usage() {
 	cat <<-EOF
 Usage: $0: command (subcommand)
@@ -76,6 +84,9 @@ upgrade
 backup
   Create a backup of the GitLab system
   http://docs.gitlab.com/ce/raketasks/backup_restore.html
+
+restart
+  Stop the services if they are running, then start them again.
 
 	EOF
 }
@@ -100,5 +111,8 @@ backup)
 	;;
 upgrade)
 	upgrade "$@"
+	;;
+restart)
+	restart "$@"
 	;;
 esac
