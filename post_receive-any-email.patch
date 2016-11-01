@@ -1,0 +1,12 @@
+https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7225
+
+--- gitlabhq-8.13.2/lib/gitlab/identifier.rb~	2016-10-31 16:41:44.000000000 +0200
++++ gitlabhq-8.13.2/lib/gitlab/identifier.rb	2016-11-02 00:05:55.000000000 +0200
+@@ -18,6 +21,6 @@
+ 
+       identify_with_cache(:email, email) do
+-        User.find_by(email: email)
++        User.find_by_any_email(email)
+       end
+     end
+ 

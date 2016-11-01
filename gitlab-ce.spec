@@ -19,7 +19,7 @@
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
 Version:	8.13.2
-Release:	0.80
+Release:	0.81
 License:	MIT
 Group:		Applications/WWW
 # md5 deliberately omitted until this package is useful
@@ -39,6 +39,7 @@ Source12:	clean-vendor.sh
 Source13:	nginx.conf
 Patch0:		3774.patch
 Patch1:		pld.patch
+Patch2:		post_receive-any-email.patch
 URL:		https://www.gitlab.com/gitlab-ce/
 BuildRequires:	cmake
 BuildRequires:	gmp-devel
@@ -104,6 +105,7 @@ mv config/gitlab.yml.example config/gitlab.yml
 mv config/unicorn.rb.example config/unicorn.rb
 #%patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 # use mysql for now
 mv config/database.yml.mysql config/database.yml
