@@ -23,7 +23,7 @@ Release:	0.81
 License:	MIT
 Group:		Applications/WWW
 # md5 deliberately omitted until this package is useful
-Source0:	https://github.com/gitlabhq/gitlabhq/archive/v%{version}/%{name}-%{version}.tar.gz
+Source0:	https://gitlab.com/gitlab-org/gitlab-ce/repository/archive.tar.bz2?ref=v%{version}&/%{name}-%{version}.tar.bz2
 Source1:	gitlab.target
 Source2:	gitlab-sidekiq.service
 Source3:	gitlab-sidekiq.init
@@ -55,7 +55,6 @@ BuildRequires:	ruby-bundler
 BuildRequires:	ruby-devel >= 1:2.1.0
 BuildRequires:	zlib-devel
 Requires(post,preun):	/sbin/chkconfig
-Requires:	webapps
 Requires:	git-core >= 2.7.4
 Requires:	gitlab-common >= 8.12-2
 Requires:	gitlab-shell >= %{shell_version}
@@ -64,6 +63,7 @@ Requires:	nodejs
 Requires:	rc-scripts
 Requires:	ruby-bundler
 Requires:	systemd-units >= 0.38
+Requires:	webapps
 Suggests:	mysql
 Suggests:	redis-server
 Obsoletes:	gitlab <= 8.1.4
@@ -100,7 +100,8 @@ BuildArch:	noarch
 Documentation for GitLab.
 
 %prep
-%setup -qn gitlabhq-%{version}
+%setup -qc
+mv gitlab-ce-v%{version}-*/{.??*,*} .
 mv config/gitlab.yml.example config/gitlab.yml
 mv config/unicorn.rb.example config/unicorn.rb
 #%patch0 -p1
