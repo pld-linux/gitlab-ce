@@ -17,6 +17,8 @@ clean_rootfiles() {
 	rm -r scripts
 	rm -r spec
 	rm .csscomb.json
+	rm .eslintignore
+	rm .eslintrc
 	rm .flayignore
 	rm .foreman
 	rm .gitattributes
@@ -32,6 +34,7 @@ clean_rootfiles() {
 	rm Procfile
 	rm bin/pkgr_before_precompile.sh
 	rm docker-compose.yml
+	rm package.json
 }
 
 clean_rubygems() {
