@@ -70,7 +70,10 @@ restart() {
 	local service services="gitlab-sidekiq gitlab-unicorn gitlab-workhorse"
 
 	for service in $services; do
-		service $service try-restart
+		service $service stop
+	done
+	for service in $services; do
+		service $service start
 	done
 }
 
