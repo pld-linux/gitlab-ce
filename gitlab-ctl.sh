@@ -74,6 +74,13 @@ restart() {
 	done
 }
 
+# run tail on the logs
+# https://github.com/chef/omnibus-ctl/blob/v0.3.6/lib/omnibus-ctl.rb#L427-L436
+logtail() {
+	# find /var/log -type f -not -path '*/sasl/*' | grep -E -v '(lock|@|tgz|gzip)' | xargs tail --follow=name --retry
+	tail -F /var/log/gitlab/*.log
+}
+
 usage() {
 	cat <<-EOF
 Usage: $0: command (subcommand)
@@ -84,6 +91,9 @@ upgrade
 backup
   Create a backup of the GitLab system
   http://docs.gitlab.com/ce/raketasks/backup_restore.html
+
+tail
+  Watch the service logs of all enabled services.
 
 restart
   Stop the services if they are running, then start them again.
@@ -114,5 +124,8 @@ upgrade)
 	;;
 restart)
 	restart "$@"
+	;;
+tail)
+	logtail "$@"
 	;;
 esac
