@@ -19,7 +19,7 @@
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
 Version:	8.15.1
-Release:	0.81
+Release:	0.82
 License:	MIT
 Group:		Applications/WWW
 # md5 deliberately omitted until this package is useful
@@ -33,10 +33,11 @@ Source6:	gitlab.logrotate
 Source7:	gitlab.tmpfiles.d
 Source8:	apache.conf
 Source9:	gitlab-rake.sh
-Source10:	gitconfig
+Source10:	gitlab-rails.sh
 Source11:	gitlab-ctl.sh
 Source12:	clean-vendor.sh
 Source13:	nginx.conf
+Source14:	gitconfig
 Patch0:		3774.patch
 Patch1:		pld.patch
 URL:		https://www.gitlab.com/gitlab-ce/
@@ -213,7 +214,7 @@ for f in gitlab.yml unicorn.rb database.yml secrets.yml; do
 done
 move_symlink %{appdir}/.gitlab_workhorse_secret %{_sysconfdir}/gitlab/.gitlab_workhorse_secret
 
-cp -p %{SOURCE10} $RPM_BUILD_ROOT%{_sysconfdir}/gitlab/.gitconfig
+cp -p %{SOURCE14} $RPM_BUILD_ROOT%{_sysconfdir}/gitlab/.gitconfig
 ln -s %{_sysconfdir}/gitlab/.gitconfig $RPM_BUILD_ROOT%{vardir}/.gitconfig
 
 touch $RPM_BUILD_ROOT%{_sysconfdir}/gitlab/skip-auto-migrations
@@ -241,6 +242,7 @@ cp -p %{SOURCE7} $RPM_BUILD_ROOT%{systemdtmpfilesdir}/gitlab.conf
 cp -p %{SOURCE6} $RPM_BUILD_ROOT/etc/logrotate.d/gitlab
 cp -p %{SOURCE8} $RPM_BUILD_ROOT%{_webapps}/%{_webapp}/httpd.conf
 install -p %{SOURCE9} $RPM_BUILD_ROOT%{_sbindir}/gitlab-rake
+install -p %{SOURCE10} $RPM_BUILD_ROOT%{_sbindir}/gitlab-rails
 install -p %{SOURCE11} $RPM_BUILD_ROOT%{_sbindir}/gitlab-ctl
 
 %clean
@@ -314,8 +316,9 @@ fi
 /etc/logrotate.d/gitlab
 %attr(754,root,root) /etc/rc.d/init.d/gitlab-sidekiq
 %attr(754,root,root) /etc/rc.d/init.d/gitlab-unicorn
-%attr(755,root,root) %{_sbindir}/gitlab-rake
 %attr(755,root,root) %{_sbindir}/gitlab-ctl
+%attr(755,root,root) %{_sbindir}/gitlab-rails
+%attr(755,root,root) %{_sbindir}/gitlab-rake
 %{systemdunitdir}/gitlab-sidekiq.service
 %{systemdunitdir}/gitlab-unicorn.service
 %{systemdunitdir}/gitlab.target
