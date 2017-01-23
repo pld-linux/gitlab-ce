@@ -9,7 +9,8 @@
 	minsize 1M
 	sharedscripts
 
-	su root git
+	su git git
+	create 640 git git
 	olddir /var/log/archive/gitlab
 
 	postrotate
