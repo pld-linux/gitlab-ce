@@ -15,10 +15,10 @@
 %bcond_without	gem_cache	# use local cache to speedup gem installation
 
 %define	shell_version 4.1.1
-%define	workhorse_version 1.2.1
+%define	workhorse_version 1.3.0
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
-Version:	8.15.3
+Version:	8.16.0
 Release:	0.82
 License:	MIT
 Group:		Applications/WWW
