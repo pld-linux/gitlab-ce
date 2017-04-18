@@ -3,3 +3,5 @@
 	email = gitlab@localhost
 [core]
 	autocrlf = input
+[repack]
+	writeBitmaps = true
