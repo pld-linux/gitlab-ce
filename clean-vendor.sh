@@ -12,7 +12,7 @@ clean_rootfiles() {
 	rm -r changelogs
 	rm -r docker
 	rm -r features
-	rm -r lib/support/{deploy,init.d}
+	rm -r lib/support
 	rm -r rubocop
 	rm -r scripts
 	rm -r spec
