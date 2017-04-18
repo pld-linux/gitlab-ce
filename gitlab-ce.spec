@@ -19,7 +19,7 @@
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
 Version:	8.17.5
-Release:	0.82
+Release:	0.84
 License:	MIT
 Group:		Applications/WWW
 # md5 deliberately omitted until this package is useful
@@ -374,6 +374,7 @@ fi
 %dir %attr(750,%{uname},%{gname}) %{vardir}/shared/artifacts/tmp/uploads
 %dir %attr(750,%{uname},%{gname}) %{vardir}/shared/lfs-objects
 %dir %attr(750,%{uname},%{gname}) %{vardir}/shared/registry
+%dir %attr(750,%{uname},%{gname}) %{vardir}/shared/pages
 
 %dir %attr(750,root,%{gname}) %{cachedir}
 %attr(-,%{uname},%{gname}) %{cachedir}/cache
