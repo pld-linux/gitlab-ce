@@ -25,11 +25,6 @@ backup() {
 	gitlab-rake gitlab:backup:create "$@"
 }
 
-# http://docs.gitlab.com/ce/administration/restart_gitlab.html#installations-from-source
-restart() {
-	:
-}
-
 # Run backup before package upgrade
 # https://gitlab.com/gitlab-org/omnibus-gitlab/blob/8.17.5+ce.0/config/templates/package-scripts/preinst.erb#L10
 preinst() {
@@ -67,6 +62,7 @@ posttrans() {
 	EOF
 }
 
+# http://docs.gitlab.com/ce/administration/restart_gitlab.html#installations-from-source
 restart() {
 	local service services="gitlab-sidekiq gitlab-unicorn gitlab-workhorse"
 
