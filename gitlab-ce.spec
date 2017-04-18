@@ -19,7 +19,7 @@
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
 Version:	8.17.5
-Release:	0.88
+Release:	0.89
 License:	MIT
 Group:		Applications/WWW
 # md5 deliberately omitted until this package is useful
@@ -152,7 +152,7 @@ npm install
 cp -p config/gitlab.yml{,.production}
 sed -i -e '/secret_file:/d' config/gitlab.yml
 sed -i -e 's#/var/lib/gitlab/repositories/#./#' config/gitlab.yml
-bundle exec rake RAILS_ENV=production assets:clean assets:precompile webpack:compile USE_DB=false
+bundle exec rake RAILS_ENV=production gitlab:assets:clean gitlab:assets:compile USE_DB=false
 mv -f config/gitlab.yml{.production,}
 
 # avoid bogus ruby dep
