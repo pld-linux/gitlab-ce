@@ -31,7 +31,7 @@ restart() {
 }
 
 # Run backup before package upgrade
-# https://gitlab.com/gitlab-org/omnibus-gitlab/blob/8.8.1+ce.0/config/templates/package-scripts/preinst.erb#L10
+# https://gitlab.com/gitlab-org/omnibus-gitlab/blob/8.17.5+ce.0/config/templates/package-scripts/preinst.erb#L10
 preinst() {
 	if [ -f $auto_migrations_skip_file ]; then
 		notice "preinstall: Found $auto_migrations_skip_file, skipping auto backup..."
@@ -40,7 +40,8 @@ preinst() {
 
 	notice "preinstall: Automatically backing up only the GitLab SQL database (excluding everything else!)"
 
-	if ! backup SKIP=repositories,uploads,builds,artifacts,lfs,registry; then
+	if ! backup SKIP=repositories,uploads,builds,artifacts,lfs,registry,pages; then
+
 		cat >&2 <<-EOF
 
 		Backup failed! If you want to skip this backup, run the following command and try again:
