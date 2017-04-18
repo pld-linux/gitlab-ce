@@ -175,6 +175,7 @@ install -d \
 	$RPM_BUILD_ROOT%{appdir}/public/{assets,uploads} \
 	$RPM_BUILD_ROOT%{appdir}/satellites \
 	$RPM_BUILD_ROOT%{appdir}/tmp/{cache/assets,sessions,backups} \
+	$RPM_BUILD_ROOT%{appdir}/shared/tmp/project_exports \
 	$RPM_BUILD_ROOT%{_sysconfdir}/gitlab \
 	$RPM_BUILD_ROOT%{_webapps}/%{_webapp} \
 	$RPM_BUILD_ROOT%{_docdir}/gitlab \
@@ -384,6 +385,8 @@ fi
 %dir %attr(750,%{uname},%{gname}) %{vardir}/shared/lfs-objects
 %dir %attr(750,%{uname},%{gname}) %{vardir}/shared/registry
 %dir %attr(750,%{uname},%{gname}) %{vardir}/shared/pages
+%dir %attr(750,%{uname},%{gname}) %{vardir}/shared/tmp
+%dir %attr(750,%{uname},%{gname}) %{vardir}/shared/tmp/project_exports
 
 %dir %attr(750,root,%{gname}) %{cachedir}
 %attr(-,%{uname},%{gname}) %{cachedir}/cache
