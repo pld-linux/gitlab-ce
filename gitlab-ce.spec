@@ -19,7 +19,7 @@
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
 Version:	8.17.5
-Release:	0.91
+Release:	0.92
 License:	MIT
 Group:		Applications/WWW
 # md5 deliberately omitted until this package is useful
@@ -48,13 +48,12 @@ BuildRequires:	libicu-devel
 BuildRequires:	libstdc++-devel
 BuildRequires:	libxml2-devel
 BuildRequires:	mysql-devel
-BuildRequires:	nodejs >= 4.3
-BuildRequires:	npm
 BuildRequires:	postgresql-devel
 BuildRequires:	rpm-rubyprov
 BuildRequires:	rpmbuild(macros) >= 1.647
 BuildRequires:	ruby-bundler
 BuildRequires:	ruby-devel >= 1:2.1.0
+BuildRequires:	yarn >= 0.17.0
 BuildRequires:	zlib-devel
 Requires(post,preun):	/sbin/chkconfig
 Requires:	git-core >= 2.7.4
@@ -144,7 +143,7 @@ bundle exec gem install -v $v rugged --no-rdoc --no-ri --verbose
 # node_modules/.bin/webpack --config config/webpack.config.js --bail
 # see vendor/bundle/ruby/gems/webpack-rails-0.9.9/lib/tasks/webpack.rake
 test -d node_modules || \
-npm install
+yarn install --production --pure-lockfile
 
 # precompile assets
 # https://gitlab.com/gitlab-org/omnibus-gitlab/blob/8.17.5+ce.0/config/software/gitlab-rails.rb
