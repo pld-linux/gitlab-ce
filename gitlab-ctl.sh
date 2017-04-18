@@ -64,7 +64,7 @@ posttrans() {
 
 # http://docs.gitlab.com/ce/administration/restart_gitlab.html#installations-from-source
 restart() {
-	local service services="gitlab-sidekiq gitlab-unicorn gitlab-workhorse"
+	local service services=${@-"gitlab-sidekiq gitlab-unicorn gitlab-workhorse"}
 
 	for service in $services; do
 		service $service stop
