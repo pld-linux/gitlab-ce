@@ -19,7 +19,7 @@
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
 Version:	8.17.5
-Release:	0.86
+Release:	0.88
 License:	MIT
 Group:		Applications/WWW
 # md5 deliberately omitted until this package is useful
@@ -48,6 +48,8 @@ BuildRequires:	libicu-devel
 BuildRequires:	libstdc++-devel
 BuildRequires:	libxml2-devel
 BuildRequires:	mysql-devel
+BuildRequires:	nodejs >= 4.3
+BuildRequires:	npm
 BuildRequires:	postgresql-devel
 BuildRequires:	rpm-rubyprov
 BuildRequires:	rpmbuild(macros) >= 1.647
@@ -138,12 +140,19 @@ v=0.25.0b7
 test -d vendor/bundle/ruby/gems/rugged-$v || \
 bundle exec gem install -v $v rugged --no-rdoc --no-ri --verbose
 
+# install webpack deps, used later by rake webpack:compile:
+# node_modules/.bin/webpack --config config/webpack.config.js --bail
+# see vendor/bundle/ruby/gems/webpack-rails-0.9.9/lib/tasks/webpack.rake
+test -d node_modules || \
+npm install
+
 # precompile assets
+# https://gitlab.com/gitlab-org/omnibus-gitlab/blob/8.17.5+ce.0/config/software/gitlab-rails.rb
 # use modified config so it doesn't croak
 cp -p config/gitlab.yml{,.production}
 sed -i -e '/secret_file:/d' config/gitlab.yml
 sed -i -e 's#/var/lib/gitlab/repositories/#./#' config/gitlab.yml
-bundle exec rake RAILS_ENV=production assets:clean assets:precompile USE_DB=false
+bundle exec rake RAILS_ENV=production assets:clean assets:precompile webpack:compile USE_DB=false
 mv -f config/gitlab.yml{.production,}
 
 # avoid bogus ruby dep

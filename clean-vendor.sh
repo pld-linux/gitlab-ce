@@ -97,7 +97,15 @@ clean_rubygems() {
 	rm -rfv gems/rugged-*/vendor
 }
 
+clean_node() {
+	cd $root
+
+	# needed only for webpack during build
+	rm -r node_modules
+}
+
 root=$1
 
 clean_rootfiles
 clean_rubygems
+clean_node
