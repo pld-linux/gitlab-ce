@@ -1,5 +1,5 @@
---- gitlabhq-8.11.3/config/gitlab.yml	2016-08-30 09:23:24.191326482 +0300
-+++ gitlabhq-8.13.2/config/gitlab.yml	2016-11-01 22:24:29.430388677 +0200
+--- gitlab-ce-9.0.5/config/gitlab.yml~	2017-04-19 19:24:05.000000000 +0300
++++ gitlab-ce-9.0.5/config/gitlab.yml	2017-04-19 20:10:23.905562742 +0300
 @@ -30,8 +30,10 @@
    gitlab:
      ## Web server settings (note: host is the FQDN, do not include http://)
@@ -22,25 +22,25 @@
  
      ## Date & Time settings
      # Uncomment and customize if you want to change the default time zone of GitLab application.
-@@ -412,7 +412,7 @@
+@@ -462,7 +464,7 @@
    # least. This setting is fed to 'rm -rf' in
    # db/migrate/20151023144219_remove_satellites.rb
    satellites:
 -    path: /home/git/gitlab-satellites/
 +    path: /var/lib/gitlab/satellites/
  
-   ## Backup settings
-   backup:
-@@ -433,7 +433,7 @@
-     # Paths where repositories can be stored. Give the canonicalized absolute pathname.
-     # NOTE: REPOS PATHS MUST NOT CONTAIN ANY SYMLINK!!!
+   ## Repositories settings
+   repositories:
+@@ -472,7 +474,7 @@
+     # real path not the symlink.
      storages: # You must have at least a `default` storage path.
--      default: /home/git/repositories/
-+      default: /var/lib/gitlab/repositories/
+       default:
+-        path: /home/git/repositories/
++        path: /var/lib/gitlab/repositories/
  
    ## Backup settings
    backup:
-@@ -458,12 +458,12 @@
+@@ -499,12 +501,12 @@
  
    ## GitLab Shell settings
    gitlab_shell:

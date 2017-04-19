@@ -14,11 +14,11 @@
 %bcond_with	krb5		# build with kerberos support
 %bcond_without	gem_cache	# use local cache to speedup gem installation
 
-%define	shell_version 4.1.1
-%define	workhorse_version 1.3.0
+%define	shell_version 5.0.0
+%define	workhorse_version 1.4.2
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
-Version:	8.17.5
+Version:	9.0.5
 Release:	0.92
 License:	MIT
 Group:		Applications/WWW
@@ -52,7 +52,7 @@ BuildRequires:	postgresql-devel
 BuildRequires:	rpm-rubyprov
 BuildRequires:	rpmbuild(macros) >= 1.647
 BuildRequires:	ruby-bundler
-BuildRequires:	ruby-devel >= 1:2.1.0
+BuildRequires:	ruby-devel >= 1:2.3.0
 BuildRequires:	yarn >= 0.17.0
 BuildRequires:	zlib-devel
 Requires(post,preun):	/sbin/chkconfig
@@ -113,12 +113,12 @@ mv config/database.yml.mysql config/database.yml
 
 find -name .gitkeep | xargs rm
 
+%build
 v=$(cat GITLAB_SHELL_VERSION)
 test "$v" = "%{shell_version}"
 v=$(cat GITLAB_WORKHORSE_VERSION)
 test "$v" = "%{workhorse_version}"
 
-%build
 %if %{with gem_cache}
 cachedir="%{_specdir}/cache/%{version}.%{_arch}"
 install -d vendor/bundle
