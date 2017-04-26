@@ -16,10 +16,12 @@
 
 %define	shell_version 5.0.0
 %define	workhorse_version 1.4.2
+%define	pages_version 0.4.0
+%define	gitaly_version 0.3.0
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
 Version:	9.0.5
-Release:	0.92
+Release:	0.96
 License:	MIT
 Group:		Applications/WWW
 # md5 deliberately omitted until this package is useful
@@ -118,6 +120,10 @@ v=$(cat GITLAB_SHELL_VERSION)
 test "$v" = "%{shell_version}"
 v=$(cat GITLAB_WORKHORSE_VERSION)
 test "$v" = "%{workhorse_version}"
+v=$(cat GITLAB_PAGES_VERSION)
+test "$v" = "%{pages_version}"
+v=$(cat GITALY_SERVER_VERSION)
+test "$v" = "%{gitaly_version}"
 
 %if %{with gem_cache}
 cachedir="%{_specdir}/cache/%{version}.%{_arch}"
@@ -143,7 +149,7 @@ bundle exec gem install -v $v rugged --no-rdoc --no-ri --verbose
 # node_modules/.bin/webpack --config config/webpack.config.js --bail
 # see vendor/bundle/ruby/gems/webpack-rails-0.9.9/lib/tasks/webpack.rake
 test -d node_modules || \
-yarn install --production --pure-lockfile
+yarn install --pure-lockfile
 
 # precompile assets
 # https://gitlab.com/gitlab-org/omnibus-gitlab/blob/8.17.5+ce.0/config/software/gitlab-rails.rb
@@ -155,7 +161,7 @@ bundle exec rake RAILS_ENV=production gitlab:assets:clean gitlab:assets:compile 
 mv -f config/gitlab.yml{.production,}
 
 # avoid bogus ruby dep
-chmod a-x vendor/bundle/ruby/gems/unicorn-*/bin/unicorn*
+chmod a-x vendor/bundle/ruby/%{ruby_version}/gems/unicorn-*/bin/unicorn*
 
 # remove secrets, log and cache that assets compile initialized
 rm .gitlab_shell_secret
@@ -196,15 +202,20 @@ sh -x %{SOURCE12} $RPM_BUILD_ROOT%{appdir}
 # replace the contents, yet leave it believe it has proper version installed (for gem dependencies)
 v=0.25.0b7
 ov=0.24.0
-rm -r $RPM_BUILD_ROOT%{appdir}/vendor/bundle/ruby/extensions/%{_arch}-linux/rugged-$ov
-mv $RPM_BUILD_ROOT%{appdir}/vendor/bundle/ruby/extensions/%{_arch}-linux/rugged-{$v,$ov}
-rm -r $RPM_BUILD_ROOT%{appdir}/vendor/bundle/ruby/gems/rugged-$ov
-mv $RPM_BUILD_ROOT%{appdir}/vendor/bundle/ruby/gems/rugged-{$v,$ov}
+rv=%{ruby_version}
+#rd=%{appdir}/vendor/bundle/ruby
+rd=%{appdir}/vendor/bundle/ruby/$rv
+
+rm -r $RPM_BUILD_ROOT$rd/extensions/%{_arch}-linux/$rv/rugged-$ov
+   mv $RPM_BUILD_ROOT$rd/extensions/%{_arch}-linux/$rv/rugged-{$v,$ov}
+rm -r $RPM_BUILD_ROOT$rd/gems/rugged-$ov
+   mv $RPM_BUILD_ROOT$rd/gems/rugged-{$v,$ov}
 
 # rpm cruft from repackaging
 rm -f $RPM_BUILD_ROOT%{appdir}/debug*.list
 
 # Creating links
+mv $RPM_BUILD_ROOT%{appdir}/tmp/sockets/* $RPM_BUILD_ROOT%{_localstatedir}/run/gitlab
 rmdir $RPM_BUILD_ROOT%{appdir}/{log,tmp/{pids,sockets}}
 ln -s %{_localstatedir}/run/gitlab $RPM_BUILD_ROOT%{appdir}/tmp/pids
 ln -s %{_localstatedir}/run/gitlab $RPM_BUILD_ROOT%{appdir}/tmp/sockets
@@ -341,6 +352,7 @@ fi
 %{appdir}/.bundle
 %{appdir}/.gitlab_workhorse_secret
 %{appdir}/.ruby-version
+%{appdir}/GITALY_SERVER_VERSION
 %{appdir}/GITLAB_PAGES_VERSION
 %{appdir}/GITLAB_SHELL_VERSION
 %{appdir}/GITLAB_WORKHORSE_VERSION
