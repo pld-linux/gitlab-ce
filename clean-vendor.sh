@@ -7,12 +7,14 @@ set -e
 # clean files not related for running gitlab
 clean_rootfiles() {
 	cd $root
+	rm -r .babelrc
 	rm -r .github
 	rm -r .gitlab
 	rm -r changelogs
 	rm -r docker
 	rm -r features
 	rm -r lib/support
+	rm -r qa
 	rm -r rubocop
 	rm -r scripts
 	rm -r spec
@@ -21,7 +23,6 @@ clean_rootfiles() {
 	rm .eslintrc
 	rm .flayignore
 	rm .foreman
-	rm .gitattributes
 	rm .gitignore
 	rm .gitlab-ci.yml
 	rm .haml-lint.yml

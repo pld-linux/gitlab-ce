@@ -14,14 +14,14 @@
 %bcond_with	krb5		# build with kerberos support
 %bcond_without	gem_cache	# use local cache to speedup gem installation
 
-%define	shell_version 5.0.0
-%define	workhorse_version 1.4.2
+%define	shell_version 5.0.2
+%define	workhorse_version 1.4.3
 %define	pages_version 0.4.0
-%define	gitaly_version 0.3.0
+%define	gitaly_version 0.6.0
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
-Version:	9.0.6
-Release:	0.96
+Version:	9.1.1
+Release:	0.100
 License:	MIT
 Group:		Applications/WWW
 # md5 deliberately omitted until this package is useful
@@ -139,12 +139,6 @@ bundle install %{_smp_mflags} \
 	--deployment \
 	--without development test aws %{!?with_krb5:kerberos}
 
-# install newer rugged to fix diff view showing garbage
-# https://gitlab.com/gitlab-org/gitlab-ce/issues/14972
-v=0.25.0b7
-test -d vendor/bundle/ruby/gems/rugged-$v || \
-bundle exec gem install -v $v rugged --no-rdoc --no-ri --verbose
-
 # install webpack deps, used later by rake webpack:compile:
 # node_modules/.bin/webpack --config config/webpack.config.js --bail
 # see vendor/bundle/ruby/gems/webpack-rails-0.9.9/lib/tasks/webpack.rake
@@ -178,7 +172,6 @@ cp -aul vendor/bundle/* "$cachedir"
 rm -rf $RPM_BUILD_ROOT
 install -d \
 	$RPM_BUILD_ROOT%{appdir}/public/{assets,uploads} \
-	$RPM_BUILD_ROOT%{appdir}/satellites \
 	$RPM_BUILD_ROOT%{appdir}/tmp/{cache/assets,sessions,backups} \
 	$RPM_BUILD_ROOT%{appdir}/shared/tmp/project_exports \
 	$RPM_BUILD_ROOT%{_sysconfdir}/gitlab \
@@ -198,18 +191,6 @@ cp -a$l . $RPM_BUILD_ROOT%{appdir}
 
 # cleanup unneccessary cruft (gem build files, etc)
 sh -x %{SOURCE12} $RPM_BUILD_ROOT%{appdir}
-
-# replace the contents, yet leave it believe it has proper version installed (for gem dependencies)
-v=0.25.0b7
-ov=0.24.0
-rv=%{ruby_version}
-#rd=%{appdir}/vendor/bundle/ruby
-rd=%{appdir}/vendor/bundle/ruby/$rv
-
-rm -r $RPM_BUILD_ROOT$rd/extensions/%{_arch}-linux/$rv/rugged-$ov
-   mv $RPM_BUILD_ROOT$rd/extensions/%{_arch}-linux/$rv/rugged-{$v,$ov}
-rm -r $RPM_BUILD_ROOT$rd/gems/rugged-$ov
-   mv $RPM_BUILD_ROOT$rd/gems/rugged-{$v,$ov}
 
 # rpm cruft from repackaging
 rm -f $RPM_BUILD_ROOT%{appdir}/debug*.list
@@ -242,7 +223,7 @@ touch $RPM_BUILD_ROOT%{_sysconfdir}/gitlab/skip-auto-migrations
 # relocate to /etc as it's updated runtime, see 77cff54
 move_symlink %{appdir}/db/schema.rb %{_sysconfdir}/gitlab/schema.rb
 
-for a in satellites builds shared tmp public/{uploads,assets}; do
+for a in builds shared tmp public/{uploads,assets}; do
 	move_symlink %{appdir}/$a %{vardir}/$a
 done
 
@@ -374,10 +355,8 @@ fi
 %{appdir}/public
 %{appdir}/shared
 %{appdir}/tmp
-%{appdir}/satellites
 
 %{vardir}/.gitconfig
-%dir %attr(755,%{uname},%{gname}) %{vardir}/satellites
 %dir %attr(755,%{uname},%{gname}) %{vardir}/builds
 %dir %{vardir}/public
 %attr(-,%{uname},%{gname}) %{vardir}/public/uploads

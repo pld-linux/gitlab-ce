@@ -1,5 +1,5 @@
---- gitlab-ce-9.0.5/config/gitlab.yml~	2017-04-19 19:24:05.000000000 +0300
-+++ gitlab-ce-9.0.5/config/gitlab.yml	2017-04-19 20:10:23.905562742 +0300
+--- gitlab-ce-9.1.1/config/gitlab.yml~	2017-04-29 02:18:23.000000000 +0300
++++ gitlab-ce-9.1.1/config/gitlab.yml	2017-04-29 02:22:07.666017631 +0300
 @@ -30,8 +30,10 @@
    gitlab:
      ## Web server settings (note: host is the FQDN, do not include http://)
@@ -22,21 +22,15 @@
  
      ## Date & Time settings
      # Uncomment and customize if you want to change the default time zone of GitLab application.
-@@ -462,7 +464,7 @@
-   # least. This setting is fed to 'rm -rf' in
-   # db/migrate/20151023144219_remove_satellites.rb
-   satellites:
--    path: /home/git/gitlab-satellites/
-+    path: /var/lib/gitlab/satellites/
- 
-   ## Repositories settings
-   repositories:
-@@ -472,7 +474,7 @@
+@@ -465,8 +465,9 @@
      # real path not the symlink.
      storages: # You must have at least a `default` storage path.
        default:
 -        path: /home/git/repositories/
+-        gitaly_address: unix:/home/git/gitlab/tmp/sockets/private/gitaly.socket # TCP connections are supported too (e.g. tcp://host:port)
 +        path: /var/lib/gitlab/repositories/
++        # TCP connections are supported too (e.g. tcp://host:port)
++        # gitaly_address: unix:/var/run/gitlab/private/gitaly.socket
  
    ## Backup settings
    backup:
