@@ -1,5 +1,5 @@
---- gitlab-ce-9.1.1/config/gitlab.yml~	2017-04-29 02:18:23.000000000 +0300
-+++ gitlab-ce-9.1.1/config/gitlab.yml	2017-04-29 02:22:07.666017631 +0300
+--- gitlab-ce-9.1.1/config/gitlab.yml	2017-04-29 02:22:07.666017631 +0300
++++ gitlab-ce-9.1.1/config/gitlab.yml	2017-04-30 20:23:39.245065762 +0300
 @@ -30,8 +30,10 @@
    gitlab:
      ## Web server settings (note: host is the FQDN, do not include http://)
@@ -22,7 +22,7 @@
  
      ## Date & Time settings
      # Uncomment and customize if you want to change the default time zone of GitLab application.
-@@ -465,8 +465,9 @@
+@@ -463,8 +465,9 @@
      # real path not the symlink.
      storages: # You must have at least a `default` storage path.
        default:
@@ -30,11 +30,11 @@
 -        gitaly_address: unix:/home/git/gitlab/tmp/sockets/private/gitaly.socket # TCP connections are supported too (e.g. tcp://host:port)
 +        path: /var/lib/gitlab/repositories/
 +        # TCP connections are supported too (e.g. tcp://host:port)
-+        # gitaly_address: unix:/var/run/gitlab/private/gitaly.socket
++        # gitaly_address: unix:/var/run/gitlab/gitaly.socket
  
    ## Backup settings
    backup:
-@@ -499,12 +501,12 @@
+@@ -498,12 +501,12 @@
  
    ## GitLab Shell settings
    gitlab_shell:
@@ -50,6 +50,15 @@
  
      # Git over HTTP
      upload_pack: true
+@@ -579,7 +582,7 @@
+     storages:
+       default:
+         path: tmp/tests/repositories/
+-        gitaly_address: unix:<%= Rails.root.join('tmp/sockets/private/gitaly.socket') %>
++        gitaly_address: unix:/var/run/gitlab/gitaly.socket
+   gitaly:
+     enabled: false
+   backup:
 --- gitlabhq-8.7.5/config/unicorn.rb	2016-05-12 17:35:19.000000000 +0300
 +++ gitlabhq-8.7.5.paths/config/unicorn.rb	2016-05-15 21:30:47.263911838 +0300
 @@ -33,12 +33,12 @@
