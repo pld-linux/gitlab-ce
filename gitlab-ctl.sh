@@ -128,4 +128,7 @@ restart)
 tail)
 	logtail "$@"
 	;;
+*)
+	echo >&2 "$0: $COMMAND not supported"
+	exit 3
 esac
