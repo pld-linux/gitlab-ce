@@ -50,15 +50,6 @@
  
      # Git over HTTP
      upload_pack: true
-@@ -579,7 +582,7 @@
-     storages:
-       default:
-         path: tmp/tests/repositories/
--        gitaly_address: unix:<%= Rails.root.join('tmp/sockets/private/gitaly.socket') %>
-+        gitaly_address: unix:/var/run/gitlab/gitaly.socket
-   gitaly:
-     enabled: false
-   backup:
 --- gitlabhq-8.7.5/config/unicorn.rb	2016-05-12 17:35:19.000000000 +0300
 +++ gitlabhq-8.7.5.paths/config/unicorn.rb	2016-05-15 21:30:47.263911838 +0300
 @@ -33,12 +33,12 @@
@@ -93,8 +84,8 @@
  
  # combine Ruby 2.0.0dev or REE with "preload_app true" for memory savings
  # http://rubyenterpriseedition.com/faq.html#adapt_apps_for_cow
---- gitlabhq-8.7.5/config/database.yml.mysql	2016-05-12 17:35:19.000000000 +0300
-+++ gitlabhq-8.7.5/config/database.yml	2016-04-17 13:53:42.000000000 +0300
+--- gitlab-ce-9.2.0/config/database.yml.mysql~	2017-05-22 20:39:58.000000000 +0300
++++ gitlab-ce-9.2.0/config/database.yml.mysql	2017-05-22 20:40:45.379599276 +0300
 @@ -8,8 +8,8 @@
    reconnect: false
    database: gitlabhq_production
@@ -106,14 +97,3 @@
    # host: localhost
    # socket: /tmp/mysql.sock
  
-@@ -23,8 +23,8 @@
-   reconnect: false
-   database: gitlabhq_development
-   pool: 5
--  username: root
--  password: "secure password"
-+  username: mysql
-+  password: ~
-   # socket: /tmp/mysql.sock
- 
- # Warning: The database defined as "test" will be erased and
