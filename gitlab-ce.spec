@@ -40,7 +40,6 @@ Source11:	gitlab-ctl.sh
 Source12:	clean-vendor.sh
 Source13:	nginx.conf
 Source14:	gitconfig
-Patch0:		3774.patch
 Patch1:		pld.patch
 URL:		https://www.gitlab.com/gitlab-ce/
 BuildRequires:	cmake
@@ -107,7 +106,6 @@ Documentation for GitLab.
 mv gitlab-ce-v%{version}-*/{.??*,*} .
 mv config/gitlab.yml.example config/gitlab.yml
 mv config/unicorn.rb.example config/unicorn.rb
-#%patch0 -p1
 %patch1 -p1
 
 # use mysql for now
