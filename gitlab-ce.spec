@@ -17,10 +17,10 @@
 %define	shell_version 5.0.5
 %define	workhorse_version 2.1.1
 %define	pages_version 0.4.3
-%define	gitaly_version 0.10.0
+%define	gitaly_version 0.11.2
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
-Version:	9.3.0
+Version:	9.3.3
 Release:	0.101
 License:	MIT
 Group:		Applications/WWW
