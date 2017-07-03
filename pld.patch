@@ -1,5 +1,5 @@
---- gitlab-ce-9.1.1/config/gitlab.yml	2017-04-29 02:22:07.666017631 +0300
-+++ gitlab-ce-9.1.1/config/gitlab.yml	2017-04-30 20:23:39.245065762 +0300
+--- gitlab-ce-9.1.1/config/gitlab.yml	2017-04-30 20:23:39.245065762 +0300
++++ gitlab-ce-9.3.3/config/gitlab.yml	2017-07-04 00:56:05.370380322 +0300
 @@ -30,8 +30,10 @@
    gitlab:
      ## Web server settings (note: host is the FQDN, do not include http://)
@@ -22,6 +22,15 @@
  
      ## Date & Time settings
      # Uncomment and customize if you want to change the default time zone of GitLab application.
+@@ -453,7 +455,7 @@
+     # This setting controls whether GitLab uses Gitaly (new component
+     # introduced in 9.0). Eventually Gitaly use will become mandatory and
+     # this option will disappear.
+-    enabled: true
++    enabled: false
+ 
+   #
+   # 4. Advanced settings
 @@ -463,8 +465,9 @@
      # real path not the symlink.
      storages: # You must have at least a `default` storage path.
