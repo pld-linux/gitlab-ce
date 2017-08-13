@@ -14,10 +14,10 @@
 %bcond_with	krb5		# build with kerberos support
 %bcond_without	gem_cache	# use local cache to speedup gem installation
 
-%define	shell_version 5.0.5
-%define	workhorse_version 2.1.1
-%define	pages_version 0.4.3
-%define	gitaly_version 0.11.2
+%define	shell_version 5.3.1
+%define	workhorse_version 2.3.0
+%define	pages_version 0.5.0
+%define	gitaly_version 0.21.2
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
 Version:	9.4.4
