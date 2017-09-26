@@ -55,7 +55,7 @@ BuildRequires:	rpmbuild(macros) >= 1.647
 BuildRequires:	ruby-bundler
 BuildRequires:	ruby-devel >= 1:2.3.0
 BuildRequires:	ruby-rubygems >= 2.6.9
-BuildRequires:	yarn >= 0.17.0
+BuildRequires:	yarn >= 1.1.0
 BuildRequires:	zlib-devel
 Requires(post,preun):	/sbin/chkconfig
 Requires:	git-core >= 2.7.4
