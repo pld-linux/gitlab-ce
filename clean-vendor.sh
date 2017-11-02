@@ -28,7 +28,6 @@ clean_rootfiles() {
 	rm .haml-lint.yml
 	rm .mailmap
 	rm .pkgr.yml
-	rm .rspec
 	rm .rubocop.yml
 	rm .rubocop_todo.yml
 	rm .scss-lint.yml
