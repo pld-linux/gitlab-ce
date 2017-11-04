@@ -21,7 +21,7 @@
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
 Version:	10.1.1
-Release:	0.103
+Release:	0.104
 License:	MIT
 Group:		Applications/WWW
 # md5 deliberately omitted until this package is useful
@@ -53,7 +53,7 @@ BuildRequires:	postgresql-devel
 BuildRequires:	rpm-rubyprov
 BuildRequires:	rpmbuild(macros) >= 1.647
 BuildRequires:	ruby-bundler
-BuildRequires:	ruby-devel >= 1:2.3.0
+BuildRequires:	ruby-devel >= 1:2.3.5-4
 BuildRequires:	ruby-rubygems >= 2.6.9
 BuildRequires:	yarn >= 1.1.0
 BuildRequires:	zlib-devel
