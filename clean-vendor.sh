@@ -7,7 +7,6 @@ set -e
 # clean files not related for running gitlab
 clean_rootfiles() {
 	cd $root
-	rm -r .babelrc
 	rm -r .github
 	rm -r .gitlab
 	rm -r changelogs
@@ -18,6 +17,8 @@ clean_rootfiles() {
 	rm -r rubocop
 	rm -r scripts
 	rm -r spec
+	rm .babelrc
+	rm .codeclimate.yml
 	rm .csscomb.json
 	rm .eslintignore
 	rm .eslintrc
@@ -27,6 +28,7 @@ clean_rootfiles() {
 	rm .gitlab-ci.yml
 	rm .haml-lint.yml
 	rm .mailmap
+	rm .nvmrc
 	rm .pkgr.yml
 	rm .rubocop.yml
 	rm .rubocop_todo.yml
@@ -34,8 +36,6 @@ clean_rootfiles() {
 	rm Procfile
 	rm bin/pkgr_before_precompile.sh
 	rm docker-compose.yml
-	rm package.json
-	rm yarn.lock
 }
 
 clean_rubygems() {
@@ -100,8 +100,22 @@ clean_rubygems() {
 clean_node() {
 	cd $root
 
+	rm package.json
+	rm yarn.lock
 	# needed only for webpack during build
 	rm -r node_modules
+}
+
+clean_log() {
+	cd $root
+
+	rm -fv log/*.log
+}
+
+clean_locale() {
+	cd $root
+
+	rm locale/*/gitlab.po.time_stamp
 }
 
 root=$1
@@ -109,3 +123,5 @@ root=$1
 clean_rootfiles
 clean_rubygems
 clean_node
+clean_log
+clean_locale

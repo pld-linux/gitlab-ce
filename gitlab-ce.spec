@@ -21,7 +21,7 @@
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
 Version:	10.1.1
-Release:	0.102
+Release:	0.103
 License:	MIT
 Group:		Applications/WWW
 # md5 deliberately omitted until this package is useful
@@ -353,6 +353,7 @@ fi
 %{appdir}/log
 %{appdir}/public
 %{appdir}/shared
+%{appdir}/symbol
 %{appdir}/tmp
 
 %{vardir}/.gitconfig
@@ -382,6 +383,8 @@ fi
 %dir %attr(750,%{uname},%{gname}) %{cachedir}/artifacts
 
 %dir %attr(771,root,%{gname}) %{_localstatedir}/run/gitlab
+
+%dir %{appdir}/locale
 
 %defattr(-,root,root,-)
 %dir %{appdir}/vendor
