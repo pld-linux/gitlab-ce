@@ -115,6 +115,7 @@ clean_log() {
 clean_locale() {
 	cd $root
 
+	rm locale/gitlab.pot
 	rm locale/*/gitlab.po.time_stamp
 }
 

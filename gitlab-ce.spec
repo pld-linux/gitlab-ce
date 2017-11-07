@@ -21,7 +21,7 @@
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
 Version:	10.1.1
-Release:	0.104
+Release:	0.105
 License:	MIT
 Group:		Applications/WWW
 # md5 deliberately omitted until this package is useful
@@ -40,6 +40,7 @@ Source11:	gitlab-ctl.sh
 Source12:	clean-vendor.sh
 Source13:	nginx.conf
 Source14:	gitconfig
+Source15:	find-lang.sh
 Patch1:		pld.patch
 URL:		https://www.gitlab.com/gitlab-ce/
 BuildRequires:	cmake
@@ -71,6 +72,8 @@ Suggests:	mysql
 Suggests:	redis-server
 Obsoletes:	gitlab <= 8.1.4
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+
+%define	find_lang	sh %{SOURCE15} %{buildroot}
 
 %define	_noautoreqfiles redcloth_scan.jar primitives.jar
 
@@ -191,6 +194,8 @@ cp -a$l . $RPM_BUILD_ROOT%{appdir}
 # cleanup unneccessary cruft (gem build files, etc)
 sh -x %{SOURCE12} $RPM_BUILD_ROOT%{appdir}
 
+%find_lang %{name}.lang
+
 # rpm cruft from repackaging
 rm -f $RPM_BUILD_ROOT%{appdir}/debug*.list
 
@@ -298,7 +303,7 @@ fi
 %triggerun -- apache < 2.2.0, apache-base
 %webapp_unregister httpd %{_webapp}
 
-%files
+%files -f %{name}.lang
 %defattr(644,root,root,755)
 %doc LICENSE
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/gitlab/database.yml
