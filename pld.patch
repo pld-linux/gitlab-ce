@@ -97,3 +97,14 @@
    # host: localhost
    # socket: /tmp/mysql.sock
  
+--- gitlab-ce-10.1.2/bin/background_jobs~	2017-11-08 11:49:53.000000000 +0200
++++ gitlab-ce-10.1.2/bin/background_jobs	2017-11-11 17:17:02.489424129 +0200
+@@ -5,7 +5,7 @@
+ sidekiq_pidfile="$app_root/tmp/pids/sidekiq.pid"
+ sidekiq_logfile="$app_root/log/sidekiq.log"
+ sidekiq_config="$app_root/config/sidekiq_queues.yml"
+-gitlab_user=$(ls -l config.ru | awk '{print $3}')
++gitlab_user=git
+ 
+ warn()
+ {
