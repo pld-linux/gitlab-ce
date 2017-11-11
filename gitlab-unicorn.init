@@ -48,8 +48,10 @@ start() {
 	fi
 
 	msg_starting "GitLab Unicorn"
+	RC_LOGGING=no
 	daemon --pidfile $pidfile --user $USER --chdir "$APP_PATH" \
-		"env RAILS_ENV=$RAILS_ENV bin/web start"
+		/usr/bin/env RAILS_ENV=$RAILS_ENV \
+		bin/web start
 	RETVAL=$?
 	[ $RETVAL -eq 0 ] && touch $lockfile
 }
