@@ -198,6 +198,7 @@ sh -x %{SOURCE12} $RPM_BUILD_ROOT%{appdir}
 
 # rpm cruft from repackaging
 rm -f $RPM_BUILD_ROOT%{appdir}/debug*.list
+rm -f $RPM_BUILD_ROOT%{appdir}/%{name}.lang
 
 # Creating links
 mv $RPM_BUILD_ROOT%{appdir}/tmp/sockets/* $RPM_BUILD_ROOT%{_localstatedir}/run/gitlab

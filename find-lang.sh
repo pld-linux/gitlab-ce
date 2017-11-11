@@ -22,8 +22,10 @@ while read file; do
 		rc=1
 	;;
 	esac
-	echo "%lang($lang) ${file#$RPM_BUILD_ROOT}" >> $langfile
-done < $tmp
+	dir=${file%/*}
+	echo "%lang($lang) %dir ${dir#$RPM_BUILD_ROOT}"
+	echo "%lang($lang) ${file#$RPM_BUILD_ROOT}"
+done < $tmp >> $langfile
 
 if [ "$(grep -Ev '(^%defattr|^$)' $langfile | wc -l)" -le 0 ]; then
 	echo >&2 "$PROG: Error: international files not found!"
