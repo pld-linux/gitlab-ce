@@ -20,7 +20,7 @@
 %define	gitaly_version 0.43.1
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
-Version:	10.1.2
+Version:	10.1.4
 Release:	1
 License:	MIT
 Group:		Applications/WWW
