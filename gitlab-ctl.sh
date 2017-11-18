@@ -5,6 +5,7 @@
 set -e
 
 auto_migrations_skip_file=/etc/gitlab/skip-auto-migrations
+gitlab_services="gitlab-sidekiq gitlab-unicorn gitlab-workhorse"}
 
 die() {
 	cat >&2
@@ -62,16 +63,28 @@ posttrans() {
 	EOF
 }
 
-# http://docs.gitlab.com/ce/administration/restart_gitlab.html#installations-from-source
-restart() {
-	local service services=${@-"gitlab-sidekiq gitlab-unicorn gitlab-workhorse"}
+start() {
+	local service services=${@-"$gitlab_services"}
+
+	for service in $services; do
+		service $service start
+	done
+}
+
+stop() {
+	local service services=${@-"$gitlab_services"}
 
 	for service in $services; do
 		service $service stop
 	done
-	for service in $services; do
-		service $service start
-	done
+}
+
+# http://docs.gitlab.com/ce/administration/restart_gitlab.html#installations-from-source
+restart() {
+	local service services=${@-"$gitlab_services"}
+
+	stop $services
+	start $services
 }
 
 # run tail on the logs
@@ -86,11 +99,14 @@ usage() {
 Usage: $0: command (subcommand)
 
 backup
-  Create a backup of the GitLab system
+  Create a backup of the GitLab system.
   http://docs.gitlab.com/ce/raketasks/backup_restore.html
 
 upgrade
-  Run migrations after a package upgrade
+  Run migrations after a package upgrade.
+
+start/stop
+  Start or stop the services.
 
 restart
   Stop the services if they are running, then start them again.
@@ -101,7 +117,7 @@ tail
 	EOF
 }
 
-COMMAND=$1
+COMMAND="$1"
 
 if [ -z "$COMMAND" ]; then
 	usage
@@ -121,6 +137,12 @@ backup)
 	;;
 upgrade)
 	upgrade "$@"
+	;;
+start)
+	start "$@"
+	;;
+stop)
+	stop "$@"
 	;;
 restart)
 	restart "$@"
