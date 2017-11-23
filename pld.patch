@@ -84,8 +84,8 @@
  
  # combine Ruby 2.0.0dev or REE with "preload_app true" for memory savings
  # http://rubyenterpriseedition.com/faq.html#adapt_apps_for_cow
---- gitlab-ce-9.2.0/config/database.yml.mysql~	2017-05-22 20:39:58.000000000 +0300
-+++ gitlab-ce-9.2.0/config/database.yml.mysql	2017-05-22 20:40:45.379599276 +0300
+--- gitlab-ce-10.2.1/config/database.yml.mysql~	2017-11-23 00:10:31.000000000 +0200
++++ gitlab-ce-10.2.1/config/database.yml.mysql	2017-11-24 21:39:43.813359449 +0200
 @@ -8,8 +8,8 @@
    reconnect: false
    database: gitlabhq_production
@@ -94,7 +94,7 @@
 -  password: "secure password"
 +  username: mysql
 +  password: ~
-   # host: localhost
+   host: localhost
    # socket: /tmp/mysql.sock
  
 --- gitlab-ce-10.1.2/bin/background_jobs~	2017-11-08 11:49:53.000000000 +0200
