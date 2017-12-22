@@ -5,7 +5,7 @@
 set -e
 
 auto_migrations_skip_file=/etc/gitlab/skip-auto-migrations
-gitlab_services="gitlab-sidekiq gitlab-unicorn gitlab-workhorse"}
+gitlab_services="gitlab-sidekiq gitlab-unicorn gitlab-workhorse"
 
 die() {
 	cat >&2
