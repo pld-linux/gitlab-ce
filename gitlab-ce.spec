@@ -14,14 +14,14 @@
 %bcond_with	krb5		# build with kerberos support
 %bcond_without	gem_cache	# use local cache to speedup gem installation
 
-%define	shell_version 5.10.0
+%define	shell_version 5.10.2
 %define	workhorse_version 3.3.1
 %define	pages_version 0.6.0
-%define	gitaly_version 0.52.1
+%define	gitaly_version 0.59.2
 Summary:	A Web interface to create projects and repositories, manage access and do code reviews
 Name:		gitlab-ce
-Version:	10.2.5
-Release:	1
+Version:	10.3.0
+Release:	0.1
 License:	MIT
 Group:		Applications/WWW
 # md5 deliberately omitted until this package is useful

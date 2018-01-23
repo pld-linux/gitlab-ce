@@ -36,7 +36,6 @@ clean_rootfiles() {
 	rm Procfile
 	rm bin/pkgr_before_precompile.sh
 	rm docker-compose.yml
-	rm tsconfig.json
 }
 
 clean_rubygems() {
