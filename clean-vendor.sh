@@ -30,6 +30,8 @@ clean_rootfiles() {
 	rm .mailmap
 	rm .nvmrc
 	rm .pkgr.yml
+	rm .prettierignore
+	rm .prettierrc
 	rm .rubocop.yml
 	rm .rubocop_todo.yml
 	rm .scss-lint.yml
